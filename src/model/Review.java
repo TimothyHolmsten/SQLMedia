@@ -11,6 +11,13 @@ public class Review {
     private int mediaId;
     private int userId;
 
+    public Review(int reviewId, String reviewText, int rating, int mediaId, int userId) {
+        this.reviewId = reviewId;
+        this.reviewText = reviewText;
+        this.rating = rating;
+        this.mediaId = mediaId;
+        this.userId = userId;
+    }
 
     public int getUserId() {
         return userId;
