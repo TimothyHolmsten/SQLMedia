@@ -11,14 +11,16 @@ public class Song extends Media {
 
     public Song(int mediaId, String title) {
         super(mediaId, title);
-        artists= new  ArrayList<>();
+        artists = new ArrayList<>();
+    }
+
+    public Song(int mediaId, String title, ArrayList<Artist> artists) {
+        super(mediaId, title);
+        this.artists = artists;
     }
 
     public ArrayList<Artist> getArtists() {
         return (ArrayList<Artist>) artists.clone();
-    }
-    public void setArtists(ArrayList<Artist> artists) {
-        this.artists = artists;
     }
 
 }
