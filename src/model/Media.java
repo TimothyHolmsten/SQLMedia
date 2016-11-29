@@ -6,10 +6,12 @@ package model;
 public abstract class Media {
     private int mediaId;
     private String title;
+    private int addedBy; // userId of who added this media
 
-    public Media(int mediaId, String title) {
+    public Media(int mediaId, String title, int addedBy) {
         this.mediaId = mediaId;
         this.title = title;
+        this.addedBy = addedBy;
     }
 
     public int getMediaId() {
@@ -18,5 +20,9 @@ public abstract class Media {
 
     public String getTitle() {
         return title;
+    }
+
+    public int getAddedBy() {
+        return addedBy;
     }
 }

@@ -7,15 +7,19 @@ import java.util.ArrayList;
  */
 public class Song extends Media {
 
+    // song(songId, mediaId, title,userId)
+    private int songId;
+
     private ArrayList<Artist> artists;
 
-    public Song(int mediaId, String title) {
-        super(mediaId, title);
+    public Song(int songId, int mediaId, String title, int userId) {
+        super(mediaId, title, userId);
+        this.songId = songId;
         artists = new ArrayList<>();
     }
 
-    public Song(int mediaId, String title, ArrayList<Artist> artists) {
-        super(mediaId, title);
+    public Song(int songId, int mediaId, String title, int userId,ArrayList<Artist> artists) {
+        super(mediaId, title, userId);
         this.artists = artists;
     }
 
@@ -23,4 +27,7 @@ public class Song extends Media {
         return (ArrayList<Artist>) artists.clone();
     }
 
+    public int getSongId() {
+        return songId;
+    }
 }
