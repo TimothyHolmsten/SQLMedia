@@ -11,6 +11,7 @@ public abstract class Media implements AddedContent {
     public Media(int mediaId, String title, int addedByUserId) {
         this.mediaId = mediaId;
         this.title = title;
+        this.addedByUserId = addedByUserId;
     }
 
     public int getMediaId() {
