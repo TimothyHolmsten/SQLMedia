@@ -13,8 +13,8 @@ public class Movie extends Media {
      * @param title title of the movie
      * @param directorId director of the movie
      */
-    public Movie(int mediaId, String title, int directorId) {
-        super(mediaId, title);
+    public Movie(int mediaId, String title, int directorId, int userId) {
+        super(mediaId, title, userId);
         this.directorId = directorId;
     }
 
