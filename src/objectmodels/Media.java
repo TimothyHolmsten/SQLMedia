@@ -3,15 +3,14 @@ package objectmodels;
 /**
  * Created by timothy on 2016-11-28.
  */
-public abstract class Media {
+public abstract class Media implements AddedContent {
     private int mediaId;
     private String title;
     private int addedByUserId; // userId of who added this media
 
-    public Media(int mediaId, String title, int addedBy) {
+    public Media(int mediaId, String title, int addedByUserId) {
         this.mediaId = mediaId;
         this.title = title;
-        this.addedByUserId = addedBy;
     }
 
     public int getMediaId() {
@@ -22,6 +21,7 @@ public abstract class Media {
         return title;
     }
 
+    @Override
     public int getAddedByUserId() {
         return addedByUserId;
     }
