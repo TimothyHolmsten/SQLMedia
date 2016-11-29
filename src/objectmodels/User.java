@@ -5,30 +5,25 @@ import java.util.ArrayList;
 /**
  * Created by timothy on 2016-11-28.
  */
-public class User {
+public class User extends Person {
     //user(userId, userName);
     private int userId;
-    private String userName;
     private ArrayList<Review> reviews;
 
     public User(int userId, String userName) {
+        super(userName);
         this.userId = userId;
-        this.userName = userName;
         reviews = new ArrayList<>();
     }
 
     public User(int userId, String userName, ArrayList<Review> reviews) {
+        super(userName);
         this.userId = userId;
-        this.userName = userName;
         this.reviews = reviews;
     }
 
     public int getUserId() {
         return userId;
-    }
-
-    public String getUserName() {
-        return userName;
     }
 
     public ArrayList<Review> getReviews() {
