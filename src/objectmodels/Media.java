@@ -7,11 +7,13 @@ public abstract class Media implements AddedContent {
     private int mediaId;
     private String title;
     private int addedByUserId; // userId of who added this media
+    private String genre;
 
-    public Media(int mediaId, String title, int addedByUserId) {
+    public Media(int mediaId, String title, int addedByUserId, String genre) {
         this.mediaId = mediaId;
         this.title = title;
         this.addedByUserId = addedByUserId;
+        this.genre = genre;
     }
 
     public int getMediaId() {
@@ -25,5 +27,9 @@ public abstract class Media implements AddedContent {
     @Override
     public int getAddedByUserId() {
         return addedByUserId;
+    }
+
+    public String getGenre() {
+        return genre;
     }
 }
