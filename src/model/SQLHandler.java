@@ -17,26 +17,6 @@ public class SQLHandler implements Query {
         connection = DriverManager.getConnection(SERVER, "root", "1234");
     }
 
-    public ResultSet executeQuery(String query) {
-        ResultSet rs = null;
-        Statement statement = null;
-        try {
-            statement = connection.createStatement();
-            rs = statement.executeQuery(query);
-        } catch (SQLException e) {
-            errorHandler.setErrorMessage(e.getSQLState());
-        } finally {
-            if (rs != null || statement != null)
-                try {
-                    rs.close();
-                    statement.close();
-                } catch (SQLException e) {
-                    errorHandler.setErrorMessage(e.getSQLState());
-                }
-        }
-        return rs;
-    }
-
     @Override
     public void addMovie(Movie movie, Director director, User user) {
 
@@ -48,17 +28,7 @@ public class SQLHandler implements Query {
     }
 
     @Override
-    public void addSong(Song song, User user) {
-
-    }
-
-    @Override
-    public void addArtist(Artist artist) {
-
-    }
-
-    @Override
-    public void addArtistToSong(Artist artist, Song song, User user) {
+    public void addArtistToSong(Artist artist, Song song, User user) throws QueryException {
         String insertArtist = "INSERT INTO Artist(artistName) VALUES(?);";
         String insertSongArtist = "INSERT INTO SongArtist VALUES(?, ?, ?);";
         try {
@@ -68,27 +38,86 @@ public class SQLHandler implements Query {
                 addArtist.setString(1, artist.getName());
                 addArtist.executeUpdate();
             }
-
             PreparedStatement addArtistToSong = connection.prepareStatement(insertSongArtist);
             addArtistToSong.setInt(1, song.getSongId());
             addArtistToSong.setInt(2, artist.getArtistId());
             addArtistToSong.setInt(3, user.getUserId());
             addArtistToSong.executeUpdate();
-
             connection.commit();
-            connection.setAutoCommit(true);
+
         } catch (SQLException e) {
             try {
                 connection.rollback();
             } catch (SQLException rollbackException) {
                 rollbackException.printStackTrace();
             }
-            errorHandler.setErrorMessage(e.getSQLState());
+            throw new QueryException(e.getSQLState());
+        } finally {
+            turnOnAutoCommit();
+        }
+    }
+
+    private void turnOnAutoCommit() {
+        try {
+            connection.setAutoCommit(true);
+        } catch (SQLException e) {
+            try {
+                connection.close();
+            } catch (SQLException e1) {
+                System.exit(e1.getErrorCode());
+            }
         }
     }
 
     @Override
-    public Artist getArtistById(int id) {
+    public void addSong(String title, String genre, User user) throws QueryException {
+        String insertSong = "INSERT INTO Song(mediaId) VALUES(?);";
+        try {
+            connection.setAutoCommit(false);
+            int mediaId = addMedia(title, genre, user);
+            int songUpdated = 0;
+
+            if (mediaId > 0) {
+                PreparedStatement addSong = connection.prepareStatement(insertSong);
+                addSong.setInt(1, mediaId);
+                songUpdated = addSong.executeUpdate();
+            } else
+                connection.rollback();
+            if (songUpdated > 0)
+                connection.commit();
+            else
+                connection.rollback();
+
+        } catch (SQLException e) {
+            throw new QueryException(e.getSQLState());
+        } finally {
+            turnOnAutoCommit();
+        }
+    }
+
+    @Override
+    public int addMedia(String title, String genre, User user) throws QueryException {
+        String insertMedia = "INSERT INTO Media(title, genre) VALUES(?, ?);";
+        String insertAddedContent = "INSERT INTO AddedContent(mediaId, userId) VALUES(?, ?);";
+        int mediaId;
+        try {
+            PreparedStatement addMedia = connection.prepareStatement(insertMedia);
+            addMedia.setString(1, title);
+            addMedia.setString(2, genre);
+            addMedia.executeUpdate();
+            mediaId = addMedia.getResultSet().getInt(1);
+            PreparedStatement addAddedContent = connection.prepareStatement(insertAddedContent);
+            addAddedContent.setInt(1, mediaId);
+            addAddedContent.setInt(2, user.getUserId());
+            addAddedContent.executeUpdate();
+        } catch (SQLException e) {
+            throw new QueryException(e.getSQLState());
+        }
+        return mediaId;
+    }
+
+    @Override
+    public Artist getArtistById(int id) throws QueryException {
         Artist artist = null;
         try {
             String query = "SELECT * FROM view_GetArtistUserId WHERE artistId = " + id;
@@ -97,13 +126,13 @@ public class SQLHandler implements Query {
             while (rs.next())
                 artist = new Artist(rs.getInt("artistId"), rs.getString("artistName"), rs.getInt("userId"));
         } catch (SQLException e) {
-            errorHandler.setErrorMessage(e.getSQLState());
+            throw new QueryException(e.getSQLState());
         }
         return artist;
     }
 
     @Override
-    public Song getSongById(int id) {
+    public Song getSongById(int id) throws QueryException {
         Song song = null;
         try {
             String query = "SELECT * FROM view_GetSongMediaUserId WHERE songId =" + id;
@@ -117,13 +146,13 @@ public class SQLHandler implements Query {
                         rs.getInt("userId"),
                         rs.getString("genre"));
         } catch (SQLException e) {
-            errorHandler.setErrorMessage(e.getSQLState());
+            throw new QueryException(e.getSQLState());
         }
         return song;
     }
 
     @Override
-    public User getUserById(int id) {
+    public User getUserById(int id) throws QueryException {
         User user = null;
         try {
             String query = "SELECT * FROM User WHERE userId = " + id;
@@ -132,7 +161,7 @@ public class SQLHandler implements Query {
             while (rs.next())
                 user = new User(rs.getInt("userId"), rs.getString("userName"));
         } catch (SQLException e) {
-            errorHandler.setErrorMessage(e.getSQLState());
+            throw new QueryException(e.getSQLState());
         }
         return user;
     }

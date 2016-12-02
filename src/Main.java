@@ -3,6 +3,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import model.QueryException;
 import model.SQLHandler;
 import objectmodels.Artist;
 
@@ -30,6 +31,9 @@ public class Main extends Application {
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        catch (QueryException e) {
             e.printStackTrace();
         }
     }
