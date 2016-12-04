@@ -12,7 +12,8 @@ public interface Query {
     String DATABASE = "labb1_databas";
     String SERVER = "jdbc:mysql://localhost:3306/" + DATABASE;
 
-    void addMovie(Movie movie, Director director, User user);
+    void addDirector(String directorName) throws QueryException;
+    void addMovie(String title, String genre, Director director, User user);
     void addAlbum(String title, ArrayList<Song> songs, User user) throws QueryException;
     void addSong(String title, String genre, User user) throws QueryException;
     void addArtistToSong(Artist artist, Song song, User user) throws QueryException;
