@@ -50,8 +50,7 @@ public class SQLHandler implements Query {
                     throw new QueryException("Could not add movie");
                 }
                 connection.commit();
-            }
-            else {
+            } else {
                 connection.rollback();
                 throw new QueryException("Could not add media");
             }
@@ -205,6 +204,20 @@ public class SQLHandler implements Query {
     }
 
     @Override
+    public void addUser(String userName) throws QueryException {
+        String insertUser = "INSERT INTO User(userName) VALUES(?);";
+        try {
+            PreparedStatement addUser = connection.prepareStatement(insertUser);
+            addUser.setString(1, userName);
+            if(addUser.executeUpdate() < 1) {
+                throw new QueryException("Could add user");
+            }
+        } catch (SQLException e) {
+            throw new QueryException(e.getSQLState());
+        }
+    }
+
+    @Override
     public Artist getArtistById(int id) throws QueryException {
         Artist artist = null;
         ResultSet rs = null;
@@ -270,7 +283,7 @@ public class SQLHandler implements Query {
         try {
             rs.close();
         } catch (SQLException e) {
-            System.exit(-1);
+            System.exit(e.getErrorCode());
         }
     }
 }

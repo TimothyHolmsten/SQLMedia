@@ -18,6 +18,7 @@ public interface Query {
     void addSong(String title, String genre, User user) throws QueryException;
     void addArtistToSong(Artist artist, Song song, User user) throws QueryException;
     int addMedia(String title, String genre, User user) throws QueryException;
+    void addUser(String userName) throws QueryException;
 
     Artist getArtistById(int id) throws QueryException;
     Song getSongById(int id) throws QueryException;
