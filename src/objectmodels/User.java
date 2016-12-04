@@ -29,4 +29,10 @@ public class User extends Person {
     public ArrayList<Review> getReviews() {
         return (ArrayList<Review>) reviews.clone();
     }
+
+    @Override
+    public String toString() {
+        return String.format("ID: %d, Name: %s, Reviews: %s",
+                userId, getName(), reviews.toString());
+    }
 }

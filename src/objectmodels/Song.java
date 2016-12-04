@@ -30,4 +30,10 @@ public class Song extends Media {
     public int getSongId() {
         return songId;
     }
+
+    @Override
+    public String toString() {
+        return String.format("ID: %d, Title: %s, Genre: %s, Added By: %d, Artists: %s",
+                songId, getTitle(), getGenre(), getAddedByUserId(), artists.toString());
+    }
 }

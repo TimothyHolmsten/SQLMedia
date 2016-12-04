@@ -114,7 +114,7 @@ public class SQLHandler implements Query {
     @Override
     public void addArtistToSong(Artist artist, Song song, User user) throws QueryException {
         String insertArtist = "INSERT INTO Artist(artistName) VALUES(?);";
-        String insertSongArtist = "INSERT INTO SongArtist VALUES(?, ?, ?);";
+        String insertSongArtist = "INSERT INTO SongArtist(songId, artistId, userId) VALUES(?, ?, ?);";
         try {
             connection.setAutoCommit(false);
             PreparedStatement addArtist = connection.prepareStatement(insertArtist);

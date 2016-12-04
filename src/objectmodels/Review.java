@@ -38,4 +38,10 @@ public class Review {
     public int getReviewId() {
         return reviewId;
     }
+
+    @Override
+    public String toString() {
+        return String.format("ID: %d, Rating: %d",
+                reviewId, rating);
+    }
 }

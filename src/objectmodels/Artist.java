@@ -21,4 +21,10 @@ public class Artist extends Person implements AddedContent {
     public int getAddedByUserId() {
         return addedByUserId;
     }
+
+    @Override
+    public String toString() {
+        return String.format("ID: %d, Name: %s, Added By: %d",
+                artistId, getName(), addedByUserId);
+    }
 }

@@ -6,6 +6,7 @@ package objectmodels;
 public class Movie extends Media {
     // Movie(mediaId,, title, userId,directorId);
     private int directorId;
+    private int movieId;
 
     /**
      * Using media as a superclass to get access to mediaId and title
@@ -13,8 +14,9 @@ public class Movie extends Media {
      * @param title title of the movie
      * @param directorId director of the movie
      */
-    public Movie(int mediaId, String title, int directorId, int userId, String genre) {
+    public Movie(int movieId, int mediaId, String title, int directorId, int userId, String genre) {
         super(mediaId, title, userId, genre);
+        this.movieId = movieId;
         this.directorId = directorId;
     }
 
@@ -23,5 +25,9 @@ public class Movie extends Media {
      */
     public int getDirectorId() {
         return directorId;
+    }
+
+    public int getMovieId() {
+        return movieId;
     }
 }

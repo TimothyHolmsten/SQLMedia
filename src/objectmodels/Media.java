@@ -32,4 +32,10 @@ public abstract class Media implements AddedContent {
     public String getGenre() {
         return genre;
     }
+
+    @Override
+    public String toString() {
+        return String.format("ID: %d, Title: %s, Genre: %s, Added By: %d",
+                mediaId, getTitle(), getGenre(), getAddedByUserId());
+    }
 }

@@ -1,8 +1,10 @@
 package model;
 
-import objectmodels.*;
+import objectmodels.Artist;
+import objectmodels.Director;
+import objectmodels.Song;
+import objectmodels.User;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**

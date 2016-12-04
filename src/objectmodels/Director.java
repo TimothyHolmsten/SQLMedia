@@ -6,7 +6,6 @@ package objectmodels;
 public class Director extends Person{
     // Director(directorId,directorName);
     private int directorId;
-    private int directorName;
 
     public Director(int directorId, String directorName) {
         super(directorName);
@@ -15,5 +14,10 @@ public class Director extends Person{
 
     public int getDirectorId() {
         return directorId;
+    }
+    @Override
+    public String toString() {
+        return String.format("ID: %d, Name: %s",
+                directorId, getName());
     }
 }
