@@ -3,6 +3,7 @@ package model;
 import objectmodels.*;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 /**
  * Created by timothy on 2016-11-28.
@@ -23,8 +24,51 @@ public class SQLHandler implements Query {
     }
 
     @Override
-    public void addAlbum(Album album, User user) {
+    public void addAlbum(String title, ArrayList<Song> songs, User user) throws QueryException {
+        String insertAlbum = "INSERT INTO Album(mediaId) VALUES(?);";
+        String insertAlbumSong = "INSERT INTO AlbumSong(albumId, songId) VALUES(?,?);";
 
+        if (songs.size() < 1)
+            throw new QueryException("An album must have songs");
+
+        try {
+            connection.setAutoCommit(false);
+            // Fix better genre
+            int mediaId = addMedia(title, songs.get(0).getGenre(), user);
+            int updatedAlbum;
+            int albumId;
+            if (mediaId > 0) {
+                PreparedStatement addAlbum = connection.prepareStatement(insertAlbum);
+                addAlbum.setInt(1, mediaId);
+                updatedAlbum = addAlbum.executeUpdate();
+                albumId = addAlbum.getResultSet().getInt(1);
+            } else {
+                connection.rollback();
+                throw new QueryException("Could not add media");
+            }
+            if (updatedAlbum > 0) {
+                PreparedStatement addAlbumSong = connection.prepareStatement(insertAlbumSong);
+
+                for (Song song : songs) {
+                    addAlbumSong.setInt(1, albumId);
+                    addAlbumSong.setInt(2, song.getSongId());
+                    if(addAlbumSong.executeUpdate() < 1) {
+                        connection.rollback();
+                        throw new QueryException("Could not add song to album");
+                    }
+                }
+                connection.commit();
+            } else {
+                connection.rollback();
+                throw new QueryException("Could not add album");
+            }
+
+        } catch (SQLException e) {
+            throw new QueryException(e.getSQLState());
+        }
+        finally {
+            turnAutoCommitOn();
+        }
     }
 
     @Override
@@ -53,11 +97,11 @@ public class SQLHandler implements Query {
             }
             throw new QueryException(e.getSQLState());
         } finally {
-            turnOnAutoCommit();
+            turnAutoCommitOn();
         }
     }
 
-    private void turnOnAutoCommit() {
+    private void turnAutoCommitOn() {
         try {
             connection.setAutoCommit(true);
         } catch (SQLException e) {
@@ -75,23 +119,26 @@ public class SQLHandler implements Query {
         try {
             connection.setAutoCommit(false);
             int mediaId = addMedia(title, genre, user);
-            int songUpdated = 0;
+            int songUpdated;
 
             if (mediaId > 0) {
                 PreparedStatement addSong = connection.prepareStatement(insertSong);
                 addSong.setInt(1, mediaId);
                 songUpdated = addSong.executeUpdate();
-            } else
+            } else {
                 connection.rollback();
+                throw new QueryException("Could not add media");
+            }
             if (songUpdated > 0)
                 connection.commit();
-            else
+            else {
                 connection.rollback();
-
+                throw new QueryException("Could not add song");
+            }
         } catch (SQLException e) {
             throw new QueryException(e.getSQLState());
         } finally {
-            turnOnAutoCommit();
+            turnAutoCommitOn();
         }
     }
 
