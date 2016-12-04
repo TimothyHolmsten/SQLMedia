@@ -24,7 +24,7 @@ public class SQLHandler implements Query {
 
     @Override
     public void addDirector(String directorName) throws QueryException {
-        String insertDirector = "INSERT INTO Director(directorName) VALUES(?)";
+        String insertDirector = "INSERT INTO Director(directorName) VALUES(?);";
         try {
             PreparedStatement addDirector = connection.prepareStatement(insertDirector);
             addDirector.setString(1, directorName);
@@ -36,9 +36,34 @@ public class SQLHandler implements Query {
     }
 
     @Override
-    public void addMovie(String title, String genre, Director director, User user) {
+    public void addMovie(String title, String genre, Director director, User user) throws QueryException {
+        String insertMovie = "INSERT INTO Movie(mediaId, directorId) VALUES(?, ?);";
+        try {
+            connection.setAutoCommit(false);
+            int mediaId = addMedia(title, genre, user);
+            if (mediaId > 0) {
+                PreparedStatement addMovie = connection.prepareStatement(insertMovie);
+                addMovie.setInt(1, mediaId);
+                addMovie.setInt(2, director.getDirectorId());
+                if (addMovie.executeUpdate() < 1) {
+                    connection.rollback();
+                    throw new QueryException("Could not add movie");
+                }
+                connection.commit();
+            }
+            else {
+                connection.rollback();
+                throw new QueryException("Could not add media");
+            }
+
+        } catch (SQLException e) {
+            throw new QueryException(e.getSQLState());
+        } finally {
+            turnAutoCommitOn();
+        }
 
     }
+
 
     @Override
     public void addAlbum(String title, ArrayList<Song> songs, User user) throws QueryException {

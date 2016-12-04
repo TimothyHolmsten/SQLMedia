@@ -13,7 +13,7 @@ public interface Query {
     String SERVER = "jdbc:mysql://localhost:3306/" + DATABASE;
 
     void addDirector(String directorName) throws QueryException;
-    void addMovie(String title, String genre, Director director, User user);
+    void addMovie(String title, String genre, Director director, User user) throws QueryException;
     void addAlbum(String title, ArrayList<Song> songs, User user) throws QueryException;
     void addSong(String title, String genre, User user) throws QueryException;
     void addArtistToSong(Artist artist, Song song, User user) throws QueryException;
