@@ -16,9 +16,10 @@ public class Album extends Media {
         songs = new ArrayList<>();
     }
 
-    public Album(int albumId,int mediaId, String title, int userId, String genre, ArrayList<Song> songs) {
+    public Album(int albumId, int mediaId, String title, int userId, String genre, ArrayList<Song> songs) {
         super(mediaId, title, userId, genre);
         this.songs = songs;
+        this.albumId = albumId;
     }
 
     public ArrayList<Song> getSongs() {
