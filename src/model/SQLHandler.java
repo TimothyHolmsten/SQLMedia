@@ -605,12 +605,38 @@ public class SQLHandler implements Query {
 
     @Override
     public ArrayList<Song> getSongsByArtist(String artistName) {
+
         return null;
     }
 
     @Override
     public ArrayList<Album> getAlbumsByArtist(String artistName) {
-        return null;
+        ArrayList<Album> songs = new ArrayList<>();
+        ResultSet rs = null;
+        try{
+            String query = String.format("SELECT * FROM view_GetSongMediaUserIdArtist WHERE artistName='%s'",artistName);
+            Statement statement = connection.createStatement();
+            rs= statement.executeQuery(query);
+            while (rs.next()) {
+
+                songs.add(new Song(rs.getInt("songId"),
+                        rs.getInt("mediaId"),
+                        rs.getString("title"),
+                        rs.getInt("userId"),
+                        rs.getString("genre")));
+
+
+            }
+
+        }catch (SQLException e){
+            throw  new QueryException(e.getMessage();
+        }finally {
+            if(rs!= null){
+                closeResultSet(rs);
+            }
+        }
+
+        return songs;
     }
 
     @Override
