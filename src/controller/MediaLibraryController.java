@@ -119,7 +119,6 @@ public class MediaLibraryController implements Initializable {
             }
             if (searchFor.equals("Song")) {
                 medias.addAll(sql.getSongsByTitle(searchText));
-                //obj = sql.getSongById(searchText);
             }
             if (medias.size() > 0)
                 for (Media media : medias)
@@ -128,8 +127,55 @@ public class MediaLibraryController implements Initializable {
                 showErrorMessage("No match found");
         }
         else if (searchBy.equals("Genre")) {
+            ArrayList<Media> medias = new ArrayList<>();
+
+            if(searchFor.equals("Movie")){
+                medias.addAll(sql.getSongsByGenre(searchText));
+            }
+            if (searchFor.equals("Album")){
+                medias.addAll(sql.getAlbumsByGenre(searchText));
+
+            }
+            if(searchFor.equals("Song")){
+                medias.addAll(sql.getSongsByGenre(searchText));
+
+            }
+            if (medias.size() > 0)
+                for (Media media : medias)
+                    searchView.getItems().addAll(media.toString());
+            else
+                showErrorMessage("No match found");
 
         }
+        else if (searchBy.equals("Artist")){
+            ArrayList<Media> medias = new ArrayList<>();
+
+            if(searchFor.equals("Album")){
+                medias.addAll(sql.getAlbumsByArtist(searchText));
+            }
+            if (searchFor.equals("Song")){
+                medias.addAll(sql.getSongsByArtist(searchText));
+
+            }
+            if (medias.size() > 0)
+                for (Media media : medias)
+                    searchView.getItems().addAll(media.toString());
+            else
+                showErrorMessage("No Match found");
+
+        }else if(searchBy.equals("Director")){
+            ArrayList<Media> medias = new ArrayList<>();
+
+            if (searchFor.equals("Movie")){
+                medias.addAll(sql.getMoviesByDirector(searchText));
+            }
+            if (medias.size() > 0)
+                for (Media media : medias)
+                    searchView.getItems().addAll(media.toString());
+            else
+                showErrorMessage("No Match found");
+        }
+
     }
 
     @Override

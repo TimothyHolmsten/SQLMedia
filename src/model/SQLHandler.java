@@ -290,7 +290,27 @@ public class SQLHandler implements Query {
     public Movie getMovieById(int id) throws QueryException {
         Movie movie = null;
         ResultSet rs = null;
+        try{
+            String query = "SELECT * FROM view_GetMovieDirectorMediaUserId WHERE movieId= "+ id;
+            Statement statement = connection.createStatement();
+            rs = statement.executeQuery(query);
+            while (rs.next()){
+                movie = new Movie(
+                        rs.getInt("movieId"),
+                        rs.getInt("mediaId"),
+                        rs.getString("title"),
+                        rs.getInt("directorId"),
+                        rs.getInt("userId"),
+                        rs.getString("genre"));
+            }
 
+        } catch (SQLException e) {
+            throw new QueryException(e.getMessage());
+        } finally {
+            if (rs != null) {
+                closeResultSet(rs);
+            }
+        }
         return movie;
     }
 
@@ -513,8 +533,8 @@ public class SQLHandler implements Query {
     public ArrayList<Movie> getMoviesByTitle(String title) throws QueryException {
         ArrayList<Movie> movies = new ArrayList<>();
         ResultSet rs = null;
-        String query = String.format("SELECT * FROM view_GetMovieDirectorMediaUserId WHERE title = '%s'", title);
-
+        String query = String.format("SELECT * FROM view_GetMovieDirectorMediaUserId WHERE title = '%s';", title);
+        System.out.print(query);
         try {
             Statement statement = connection.createStatement();
             rs = statement.executeQuery(query);
