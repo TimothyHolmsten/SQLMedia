@@ -115,6 +115,7 @@ public class SQLHandler implements Query {
         String insertArtist = "INSERT INTO Artist(artistName) VALUES(?);";
         String insertSongArtist = "INSERT INTO SongArtist(songId, artistId, userId) VALUES(?, ?, ?);";
         try {
+            connection.setAutoCommit(false);
             PreparedStatement addArtist = connection.prepareStatement(insertArtist);
             if (getArtistById(artist.getArtistId()) == null) {
                 addArtist.setString(1, artist.getName());
@@ -268,8 +269,8 @@ public class SQLHandler implements Query {
             PreparedStatement addReview = connection.prepareStatement(insertReview);
             addReview.setString(1,reviewText);
             addReview.setInt(2, rating);
-            addReview.setInt(3,user.getUserId());
-            addReview.setInt(4,mediaId);
+            addReview.setInt(4,user.getUserId());
+            addReview.setInt(3,mediaId);
             if( addReview.executeUpdate()<1){
                 connection.rollback();
 
