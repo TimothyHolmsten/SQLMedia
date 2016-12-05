@@ -13,6 +13,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.QueryException;
 import model.SQLHandler;
+import objectmodels.Director;
 import objectmodels.Song;
 import objectmodels.User;
 
@@ -29,18 +30,23 @@ public class MediaLibraryController implements Initializable {
     private ComboBox<String> comboBoxSearchFor, comboBoxSearchBy;
 
     @FXML
-    private Button btnSearch, btnClearView, btnGetSongs;
+    private Button btnSearch, btnClearView, btnGetSongs,
+            btnGetDirectors;
     @FXML
-    private Button btnAddAlbum;
+    private Button btnAddAlbum, btnAddMovie;
 
     @FXML
-    private TextField textSearch, textAlbumTitle;
+    private TextField textSearch, textAlbumTitle,
+            textMovieTitle, textMovieDirector, textMovieGenre;
 
     @FXML
     private ListView<String> searchView;
 
     @FXML
     private ListView<Song> songView;
+
+    @FXML
+    private ListView<Director> directorView;
 
     @FXML
     private MenuItem menuLogin;
@@ -176,6 +182,39 @@ public class MediaLibraryController implements Initializable {
                 songs.addAll(songView.getSelectionModel().getSelectedItems());
                 try {
                     sql.addAlbum(textAlbumTitle.getText(), songs, client);
+                } catch (QueryException e) {
+                    showErrorMessage(e.getMessage());
+                }
+            }
+        });
+
+        btnGetDirectors.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                directorView.getItems().clear();
+                try {
+                    directorView.getItems().addAll(sql.getDirectors());
+                } catch (QueryException e) {
+                    showErrorMessage(e.getMessage());
+                }
+            }
+        });
+
+        btnAddMovie.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Director director;
+                try {
+                    if (textMovieDirector.getText() != null)
+                        director = new Director(sql.addDirector(textMovieDirector.getText()), textMovieDirector.getText());
+                    else if (directorView.getSelectionModel().getSelectedItems() != null)
+                        director = directorView.getSelectionModel().getSelectedItem();
+                    else {
+                        showErrorMessage("Could not add director");
+                        return;
+                    }
+
+                    sql.addMovie(textMovieTitle.getText(), textMovieGenre.getText(), director, client);
                 } catch (QueryException e) {
                     showErrorMessage(e.getMessage());
                 }

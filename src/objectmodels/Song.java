@@ -20,6 +20,7 @@ public class Song extends Media {
 
     public Song(int songId, int mediaId, String title, int userId, String genre, ArrayList<Artist> artists) {
         super(mediaId, title, userId, genre);
+        this.songId = songId;
         this.artists = artists;
     }
 
@@ -33,7 +34,11 @@ public class Song extends Media {
 
     @Override
     public String toString() {
-        return String.format("ID: %d, Title: %s, Genre: %s, Added By: %d, Artists: %s \n",
-                songId, getTitle(), getGenre(), getAddedByUserId(), artists.toString());
+        if (artists.size() > 0)
+            return String.format("ID: %d, Title: %s, Genre: %s, Added By: %d, Artists: %s",
+                    songId, getTitle(), getGenre(), getAddedByUserId(), artists.toString());
+        else
+            return String.format("ID: %d, Title: %s, Genre: %s, Added By: %d",
+                    songId, getTitle(), getGenre(), getAddedByUserId());
     }
 }

@@ -21,16 +21,19 @@ public class SQLHandler implements Query {
 
 
     @Override
-    public void addDirector(String directorName) throws QueryException {
+    public int addDirector(String directorName) throws QueryException {
         String insertDirector = "INSERT INTO Director(directorName) VALUES(?);";
+        int directorId;
         try {
             PreparedStatement addDirector = connection.prepareStatement(insertDirector);
             addDirector.setString(1, directorName);
             if (addDirector.executeUpdate() < 1)
                 throw new QueryException("Could not add director");
+            directorId = lastInsertId("directorId");
         } catch (SQLException e) {
             throw new QueryException(e.getSQLState());
         }
+        return directorId;
     }
 
     @Override
@@ -252,6 +255,25 @@ public class SQLHandler implements Query {
     }
 
     @Override
+    public ArrayList<Director> getDirectors() throws QueryException {
+        ArrayList<Director> directors = new ArrayList<>();
+        ResultSet rs = null;
+        String query = "SELECT * FROM Director";
+        try {
+            Statement statement = connection.createStatement();
+            rs = statement.executeQuery(query);
+            while (rs.next())
+                directors.add(new Director(rs.getInt("directorId"), rs.getString("directorName")));
+        } catch (SQLException e) {
+            throw new QueryException(e.getSQLState());
+        } finally {
+            if(rs != null)
+                closeResultSet(rs);
+        }
+        return directors;
+    }
+
+    @Override
     public Artist getArtistById(int id) throws QueryException {
         Artist artist = null;
         ResultSet rs = null;
@@ -271,6 +293,26 @@ public class SQLHandler implements Query {
     }
 
     @Override
+    public ArrayList<Artist> getSongArtists(int songId) throws QueryException {
+        ResultSet rs = null;
+        ArrayList<Artist> artistsList = new ArrayList<>();
+
+        try {
+            String artistQuery = "SELECT * FROM view_GetSongArtistUserId WHERE songId =" + songId;
+            Statement statement = connection.createStatement();
+            rs = statement.executeQuery(artistQuery);
+            while (rs.next())
+                artistsList.add(new Artist(rs.getInt("artistId"), rs.getString("artistName"), rs.getInt("userId")));
+        } catch (SQLException e) {
+            throw new QueryException(e.getSQLState());
+        } finally {
+            if (rs != null)
+                closeResultSet(rs);
+        }
+        return artistsList;
+    }
+
+    @Override
     public Song getSongById(int id) throws QueryException {
         Song song = null;
         ResultSet rs = null;
@@ -278,13 +320,15 @@ public class SQLHandler implements Query {
             String query = "SELECT * FROM view_GetSongMediaUserId WHERE songId =" + id;
             Statement statement = connection.createStatement();
             rs = statement.executeQuery(query);
+
             while (rs.next())
                 song = new Song(
                         rs.getInt("songId"),
                         rs.getInt("mediaId"),
                         rs.getString("title"),
                         rs.getInt("userId"),
-                        rs.getString("genre"));
+                        rs.getString("genre"),
+                        getSongArtists(id));
         } catch (SQLException e) {
             throw new QueryException(e.getSQLState());
         } finally {
@@ -384,7 +428,8 @@ public class SQLHandler implements Query {
                         rs.getInt("mediaId"),
                         rs.getString("title"),
                         rs.getInt("userId"),
-                        rs.getString("genre")));
+                        rs.getString("genre"),
+                        getSongArtists(rs.getInt("songId"))));
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
