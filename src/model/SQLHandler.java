@@ -230,6 +230,7 @@ public class SQLHandler implements Query {
     public Movie getMovieById(int id) throws QueryException {
         Movie movie = null;
         ResultSet rs = null;
+
     return movie;
     }
 
@@ -413,6 +414,70 @@ public class SQLHandler implements Query {
         return user;
     }
 
+    @Override
+    public ArrayList<Media> getAllMedia() throws QueryException {
+        ArrayList<Media> media = new ArrayList<>();
+        media.addAll(getSongs());
+        media.addAll(getMovies());
+        media.addAll(getAlbums());
+
+        return media;
+    }
+
+    public ArrayList<Album> getAlbums() throws QueryException{
+        ArrayList<Album> albums= new ArrayList<>();
+        ResultSet rs= null;
+        try {
+            String query ="SELECT * FROM view_GetAlbumMediaUser";
+            Statement statement = connection.createStatement();
+            rs = statement.executeQuery(query);
+            while(rs.next()){
+                albums.add(new Album(rs.getInt("albumId"),
+                        rs.getInt("mediaId"),
+                        rs.getString("title"),
+                        rs.getInt("userId"),
+                        rs.getString("genre")));
+            }
+        }catch(SQLException e){
+            throw new QueryException(e.getMessage());
+
+        }finally {
+            if (rs!=null){
+                closeResultSet(rs);
+            }
+        }
+        return albums;
+    }
+    public ArrayList<Movie> getMovies() throws QueryException{
+        ArrayList<Movie> movies= new ArrayList<>();
+        ResultSet rs = null;
+
+        try {
+            String query = "SELECT * FROM view_GetMovieDirectorUserId";
+            Statement statement = connection.createStatement();
+            rs =statement.executeQuery(query);
+
+            while(rs.next()) {
+
+
+                movies.add(new Movie(rs.getInt("movieId"),
+                        rs.getInt("mediaId"),
+                        rs.getString("title"),
+                        rs.getInt("directorId"),
+                        rs.getInt("userId"),
+                        rs.getString("genre"))
+                );
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            if (rs != null)
+                closeResultSet(rs);
+
+        }
+
+        return movies;
+    }
     @Override
     public ArrayList<Song> getSongs() throws QueryException {
         ArrayList<Song> songs = new ArrayList<>();

@@ -30,6 +30,7 @@ public interface Query {
     Album getAlbumById(int id) throws QueryException;
     ArrayList<Song> getSongs() throws QueryException;
     User getUserByName(String userName) throws QueryException;
+    ArrayList<Media> getAllMedia() throws QueryException;
 
 
 }

@@ -5,8 +5,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import model.QueryException;
 import model.SQLHandler;
-
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import objectmodels.*;
 public class Main extends Application {
@@ -25,9 +25,11 @@ public class Main extends Application {
         SQLHandler sql = null;
         try {
             sql = new SQLHandler();
-            //   System.out.println(sql.getArtistById(1).getName());
+            ArrayList<Media> media= sql.getAllMedia();
+            System.out.print(media.toString());
+               System.out.println(sql.getArtistById(1).getName());
             Album album= sql.getAlbumById(1);
-            System.out.print(album.toString());
+           // System.out.print(album.toString());
             //   sql.addArtistToSong(sql.getArtistById(1), sql.getSongById(1), sql.getUserById(1));
         } catch (SQLException e) {
             e.printStackTrace();

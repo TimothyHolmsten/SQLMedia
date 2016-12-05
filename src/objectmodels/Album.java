@@ -34,4 +34,6 @@ public class Album extends Media {
         return String.format("ID: %d, Title: %s, Genre: %s, Added By: %d, Songs: %s /n",
                 albumId, getTitle(), getGenre(), getAddedByUserId(), songs.toString());
     }
+
+
 }
