@@ -4,7 +4,6 @@ import objectmodels.*;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * Created by timothy on 2016-11-28.
@@ -486,40 +485,70 @@ public class SQLHandler implements Query {
         return media;
     }
 
-    public ArrayList<Album> getAlbums() throws QueryException{
-        ArrayList<Album> albums= new ArrayList<>();
-        ResultSet rs= null;
+    @Override
+    public ArrayList<Movie> getMoviesByTitle(String title) throws QueryException {
+        ArrayList<Movie> movies = new ArrayList<>();
+        ResultSet rs = null;
+        String query = String.format("SELECT * FROM view_GetMovieDirectorMediaUserId WHERE title = '%s'", title);
+
         try {
-            String query ="SELECT * FROM view_GetAlbumMediaUser";
             Statement statement = connection.createStatement();
             rs = statement.executeQuery(query);
-            while(rs.next()){
+            while (rs.next()) {
+                movies.add(new Movie(
+                        rs.getInt("movieId"),
+                        rs.getInt("mediaId"),
+                        rs.getString("title"),
+                        rs.getInt("directorId"),
+                        rs.getInt("userId"),
+                        rs.getString("genre")
+
+                ));
+            }
+        } catch (SQLException e) {
+            throw new QueryException(e.getMessage());
+        } finally {
+            if (rs != null)
+                closeResultSet(rs);
+        }
+        return movies;
+    }
+
+    public ArrayList<Album> getAlbums() throws QueryException {
+        ArrayList<Album> albums = new ArrayList<>();
+        ResultSet rs = null;
+        try {
+            String query = "SELECT * FROM view_GetAlbumMediaUser";
+            Statement statement = connection.createStatement();
+            rs = statement.executeQuery(query);
+            while (rs.next()) {
                 albums.add(new Album(rs.getInt("albumId"),
                         rs.getInt("mediaId"),
                         rs.getString("title"),
                         rs.getInt("userId"),
                         rs.getString("genre")));
             }
-        }catch(SQLException e){
+        } catch (SQLException e) {
             throw new QueryException(e.getMessage());
 
-        }finally {
-            if (rs!=null){
+        } finally {
+            if (rs != null) {
                 closeResultSet(rs);
             }
         }
         return albums;
     }
-    public ArrayList<Movie> getMovies() throws QueryException{
-        ArrayList<Movie> movies= new ArrayList<>();
+
+    public ArrayList<Movie> getMovies() throws QueryException {
+        ArrayList<Movie> movies = new ArrayList<>();
         ResultSet rs = null;
 
         try {
-            String query = "SELECT * FROM view_GetMovieDirectorUserId";
+            String query = "SELECT * FROM view_GetMovieDirectorMediaUserId";
             Statement statement = connection.createStatement();
-            rs =statement.executeQuery(query);
+            rs = statement.executeQuery(query);
 
-            while(rs.next()) {
+            while (rs.next()) {
 
 
                 movies.add(new Movie(rs.getInt("movieId"),
@@ -530,9 +559,9 @@ public class SQLHandler implements Query {
                         rs.getString("genre"))
                 );
             }
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             if (rs != null)
                 closeResultSet(rs);
 
@@ -540,6 +569,7 @@ public class SQLHandler implements Query {
 
         return movies;
     }
+
     @Override
     public ArrayList<Song> getSongs() throws QueryException {
         ArrayList<Song> songs = new ArrayList<>();
