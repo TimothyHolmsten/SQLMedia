@@ -14,7 +14,8 @@ public interface Query {
     int addDirector(String directorName) throws QueryException;
     void addMovie(String title, String genre, Director director, User user) throws QueryException;
     void addAlbum(String title, ArrayList<Song> songs, User user) throws QueryException;
-    void addSong(String title, String genre, User user) throws QueryException;
+    void addSong(String title, String genre, User user, Artist artist) throws QueryException;
+    void addSong(String title, String genre, User user, String artistName) throws QueryException;
     void addArtistToSong(Artist artist, Song song, User user) throws QueryException;
     int addMedia(String title, String genre, User user) throws QueryException;
     void addUser(String userName) throws QueryException;
@@ -30,6 +31,7 @@ public interface Query {
     Album getAlbumById(int id) throws QueryException;
     ArrayList<Song> getSongs() throws QueryException;
     User getUserByName(String userName) throws QueryException;
+    ArrayList<Artist> getArtists() throws QueryException;
     ArrayList<Media> getAllMedia() throws QueryException;
 
 

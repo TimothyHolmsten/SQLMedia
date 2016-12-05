@@ -13,6 +13,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.QueryException;
 import model.SQLHandler;
+import objectmodels.Artist;
 import objectmodels.Director;
 import objectmodels.Song;
 import objectmodels.User;
@@ -31,13 +32,14 @@ public class MediaLibraryController implements Initializable {
 
     @FXML
     private Button btnSearch, btnClearView, btnGetSongs,
-            btnGetDirectors;
+            btnGetDirectors, btnGetArtists;
     @FXML
-    private Button btnAddAlbum, btnAddMovie;
+    private Button btnAddAlbum, btnAddMovie, btnAddSong;
 
     @FXML
     private TextField textSearch, textAlbumTitle,
-            textMovieTitle, textMovieDirector, textMovieGenre;
+            textMovieTitle, textMovieDirector, textMovieGenre,
+            textSongTitle, textSongGenre, textSongArtist;
 
     @FXML
     private ListView<String> searchView;
@@ -47,6 +49,9 @@ public class MediaLibraryController implements Initializable {
 
     @FXML
     private ListView<Director> directorView;
+
+    @FXML
+    private ListView<Artist> artistView;
 
     @FXML
     private MenuItem menuLogin;
@@ -216,6 +221,39 @@ public class MediaLibraryController implements Initializable {
 
                     sql.addMovie(textMovieTitle.getText(), textMovieGenre.getText(), director, client);
                 } catch (QueryException e) {
+                    showErrorMessage(e.getMessage());
+                }
+            }
+        });
+
+        btnGetArtists.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                artistView.getItems().clear();
+                try {
+                    artistView.getItems().addAll(sql.getArtists());
+                } catch (QueryException e) {
+                    showErrorMessage(e.getMessage());
+                }
+            }
+        });
+
+        btnAddSong.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                try {
+                    if (textSongArtist.getText() != null)
+                        sql.addSong(textSongTitle.getText(), textSongGenre.getText(), client, textSongArtist.getText());
+                    else if (artistView.getSelectionModel().getSelectedItems() != null) {
+                        Artist artist = artistView.getSelectionModel().getSelectedItem();
+                        sql.addSong(textSongTitle.getText(), textSongGenre.getText(), client, artist);
+                    } else {
+                        showErrorMessage("Could not add song with artist");
+                    }
+
+                } catch (QueryException e) {
+                    System.out.println(e.getMessage());
+                    e.printStackTrace();
                     showErrorMessage(e.getMessage());
                 }
             }
