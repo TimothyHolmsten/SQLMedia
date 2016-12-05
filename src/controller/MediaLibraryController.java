@@ -130,7 +130,7 @@ public class MediaLibraryController implements Initializable {
             ArrayList<Media> medias = new ArrayList<>();
 
             if(searchFor.equals("Movie")){
-                medias.addAll(sql.getSongsByGenre(searchText));
+                medias.addAll(sql.getMoviesByGenre(searchText));
             }
             if (searchFor.equals("Album")){
                 medias.addAll(sql.getAlbumsByGenre(searchText));
@@ -168,6 +168,20 @@ public class MediaLibraryController implements Initializable {
 
             if (searchFor.equals("Movie")){
                 medias.addAll(sql.getMoviesByDirector(searchText));
+            }
+            if (medias.size() > 0)
+                for (Media media : medias)
+                    searchView.getItems().addAll(media.toString());
+            else
+                showErrorMessage("No Match found");
+        } else if(searchBy.equals("Rating")) {
+            ArrayList<Media> medias = new ArrayList<>();
+
+            if (searchFor.equals("Movie")){
+                medias.addAll(sql.getMoviesByRating(Integer.parseInt(searchText)));
+            }
+            if (searchFor.equals("Song")){
+                medias.addAll(sql.getSongsByRating(Integer.parseInt(searchText)));
             }
             if (medias.size() > 0)
                 for (Media media : medias)

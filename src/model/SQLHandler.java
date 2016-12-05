@@ -10,10 +10,8 @@ import java.util.ArrayList;
  */
 public class SQLHandler implements Query {
     private Connection connection;
-    private ErrorHandler errorHandler;
 
     public SQLHandler() throws SQLException, ClassNotFoundException {
-        errorHandler = new ErrorHandler();
         Class.forName("com.mysql.jdbc.Driver");
         connection = DriverManager.getConnection(SERVER, "root", "1234");
     }
@@ -290,11 +288,11 @@ public class SQLHandler implements Query {
     public Movie getMovieById(int id) throws QueryException {
         Movie movie = null;
         ResultSet rs = null;
-        try{
-            String query = "SELECT * FROM view_GetMovieDirectorMediaUserId WHERE movieId= "+ id;
+        try {
+            String query = "SELECT * FROM view_GetMovieDirectorMediaUserId WHERE movieId= " + id;
             Statement statement = connection.createStatement();
             rs = statement.executeQuery(query);
-            while (rs.next()){
+            while (rs.next()) {
                 movie = new Movie(
                         rs.getInt("movieId"),
                         rs.getInt("mediaId"),
@@ -438,22 +436,36 @@ public class SQLHandler implements Query {
         return user;
     }
 
-    @Override
-    public Album getAlbumById(int id) throws QueryException {
-
-        Album album = null;
-        ResultSet rs = null;
+    private ArrayList<Song> getAlbumSongs(int id) throws QueryException {
         ArrayList<Song> songs = new ArrayList<>();
-
+        ResultSet rs = null;
+        String querySongs = "SELECT * FROM AlbumSong WHERE albumId=" + id;
+        Statement StatementSongs = null;
         try {
-
-            String querySongs = "SELECT * FROM AlbumSong WHERE albumId=" + id;
-            Statement StatementSongs = connection.createStatement();
+            StatementSongs = connection.createStatement();
             StatementSongs.execute(querySongs);
             rs = StatementSongs.executeQuery(querySongs);
             while (rs.next()) {
                 songs.add(getSongById(rs.getInt("songId")));
             }
+        } catch (SQLException e) {
+            throw new QueryException(e.getMessage());
+        } finally {
+            if (rs != null)
+                closeResultSet(rs);
+        }
+        return songs;
+    }
+
+    @Override
+    public Album getAlbumById(int id) throws QueryException {
+
+        Album album = null;
+        ResultSet rs = null;
+        ArrayList<Song> songs;
+
+        try {
+            songs = getAlbumSongs(id);
             rs = null;
             String queryAlbum = "SELECT * FROM view_GetAlbumMediaUser where albumId=" + id;
             Statement StatementAlbum = connection.createStatement();
@@ -600,7 +612,8 @@ public class SQLHandler implements Query {
                         rs.getInt("mediaId"),
                         rs.getString("title"),
                         rs.getInt("userId"),
-                        rs.getString("genre")
+                        rs.getString("genre"),
+                        getAlbumSongs(rs.getInt("albumId"))
                 ));
         } catch (SQLException e) {
             throw new QueryException(e.getMessage());
@@ -678,7 +691,8 @@ public class SQLHandler implements Query {
                         rs.getInt("mediaId"),
                         rs.getString("title"),
                         rs.getInt("userId"),
-                        rs.getString("genre")
+                        rs.getString("genre"),
+                        getAlbumSongs(rs.getInt("albumId"))
                 ));
         } catch (SQLException e) {
             throw new QueryException(e.getMessage());
@@ -719,7 +733,7 @@ public class SQLHandler implements Query {
     public ArrayList<Song> getSongsByArtist(String artistName) throws QueryException {
         ArrayList<Song> songs = new ArrayList<>();
         ResultSet rs = null;
-        String query = String.format("SELECT * FROM view_GetSongMediaUserIdArtist WHERE artistName = '%s'");
+        String query = String.format("SELECT * FROM view_GetSongMediaUserIdArtist WHERE artistName = '%s'", artistName);
         try {
             Statement statement = connection.createStatement();
             rs = statement.executeQuery(query);
@@ -754,7 +768,8 @@ public class SQLHandler implements Query {
                         rs.getInt("mediaId"),
                         rs.getString("title"),
                         rs.getInt("userId"),
-                        rs.getString("genre")
+                        rs.getString("genre"),
+                        getAlbumSongs(rs.getInt("albumId"))
                 ));
         } catch (SQLException e) {
             throw new QueryException(e.getMessage());
@@ -764,6 +779,60 @@ public class SQLHandler implements Query {
             }
         }
         return albums;
+    }
+
+    @Override
+    public ArrayList<Song> getSongsByRating(int rating) throws QueryException {
+        ArrayList<Song> songs = new ArrayList<>();
+        ResultSet rs = null;
+        String query = "SELECT * FROM view_GetSongMediaUserIdArtist, Review WHERE " +
+                "Review.mediaId = view_getsongmediauseridartist.mediaId && rating=" + rating;
+        try {
+            Statement statement = connection.createStatement();
+            rs = statement.executeQuery(query);
+            while (rs.next())
+                songs.add(new Song(
+                        rs.getInt("songId"),
+                        rs.getInt("mediaId"),
+                        rs.getString("title"),
+                        rs.getInt("userId"),
+                        rs.getString("genre"),
+                        getSongArtists(rs.getInt("songId"))
+                ));
+        } catch (SQLException e) {
+            throw new QueryException(e.getMessage());
+        } finally {
+            if (rs != null)
+                closeResultSet(rs);
+        }
+        return songs;
+    }
+
+    @Override
+    public ArrayList<Movie> getMoviesByRating(int rating) throws QueryException {
+        ArrayList<Movie> movies = new ArrayList<>();
+        ResultSet rs = null;
+        String query = "SELECT * FROM view_GetMovieDirectorMediaUserId, Review WHERE " +
+                "view_getmoviedirectormediauserid.mediaId = Review.mediaId && rating=" + rating;
+        try {
+            Statement statement = connection.createStatement();
+            rs = statement.executeQuery(query);
+            while (rs.next())
+                movies.add(new Movie(
+                        rs.getInt("movieId"),
+                        rs.getInt("mediaId"),
+                        rs.getString("title"),
+                        rs.getInt("directorId"),
+                        rs.getInt("userId"),
+                        rs.getString("genre")
+                ));
+        } catch (SQLException e) {
+            throw new QueryException(e.getMessage());
+        } finally {
+            if (rs != null)
+                closeResultSet(rs);
+        }
+        return movies;
     }
 
     @Override

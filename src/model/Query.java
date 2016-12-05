@@ -48,6 +48,9 @@ public interface Query {
     ArrayList<Song> getSongsByArtist(String artistName) throws QueryException;
     ArrayList<Album> getAlbumsByArtist(String artistName) throws QueryException;
 
+    ArrayList<Song> getSongsByRating(int rating) throws QueryException;
+    ArrayList<Movie> getMoviesByRating(int rating) throws QueryException;
+
 
 
 
