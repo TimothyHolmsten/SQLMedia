@@ -96,11 +96,33 @@
                                     </AnchorPane>
                               </content>
                             </Tab>
+                              <Tab text="Song">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <TextField fx:id="textSongTitle" layoutX="14.0" layoutY="31.0" promptText="Title" />
+                                          <Label layoutX="14.0" layoutY="14.0" text="Song title" />
+                                          <ListView fx:id="artistView" layoutX="14.0" layoutY="64.0" prefHeight="179.0" prefWidth="383.0" />
+                                          <TextField fx:id="textSongGenre" layoutX="206.0" layoutY="31.0" promptText="Genre" />
+                                          <Label layoutX="206.0" layoutY="14.0" text="Genre" />
+                                          <Button fx:id="btnAddSong" layoutX="471.0" layoutY="189.0" mnemonicParsing="false" prefHeight="102.0" prefWidth="115.0" text="Add song" />
+                                          <Button fx:id="btnGetArtists" layoutX="14.0" layoutY="254.0" mnemonicParsing="false" text="Update artists" />
+                                          <TextField fx:id="textSongArtist" layoutX="397.0" layoutY="31.0" promptText="Name" />
+                                          <Label layoutX="397.0" layoutY="14.0" text="Artist" />
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                              </Tab>
                           </tabs>
                         </TabPane>
                      </children></AnchorPane>
             </content>
           </Tab>
+            <Tab text="Review">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              </content>
+            </Tab>
         </tabs>
       </TabPane>
    </center>
