@@ -1,9 +1,6 @@
 package model;
 
-import objectmodels.Artist;
-import objectmodels.Director;
-import objectmodels.Song;
-import objectmodels.User;
+import objectmodels.*;
 
 import java.util.ArrayList;
 
@@ -21,8 +18,14 @@ public interface Query {
     void addArtistToSong(Artist artist, Song song, User user) throws QueryException;
     int addMedia(String title, String genre, User user) throws QueryException;
     void addUser(String userName) throws QueryException;
+    void addReview(String reviewText, int rate , User user) throws QueryException;
 
+    Movie getMovieById(int id) throws QueryException;
+    Director getDirectorById(int id) throws QueryException;
     Artist getArtistById(int id) throws QueryException;
     Song getSongById(int id) throws QueryException;
     User getUserById(int id) throws QueryException;
+    Album getAlbumById(int id) throws QueryException;
+
+
 }

@@ -33,7 +33,7 @@ public class Song extends Media {
 
     @Override
     public String toString() {
-        return String.format("ID: %d, Title: %s, Genre: %s, Added By: %d, Artists: %s",
+        return String.format("ID: %d, Title: %s, Genre: %s, Added By: %d, Artists: %s \n",
                 songId, getTitle(), getGenre(), getAddedByUserId(), artists.toString());
     }
 }

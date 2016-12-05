@@ -1,9 +1,6 @@
 package model;
 
-import objectmodels.Artist;
-import objectmodels.Director;
-import objectmodels.Song;
-import objectmodels.User;
+import objectmodels.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -192,6 +189,7 @@ public class SQLHandler implements Query {
             addMedia.setString(1, title);
             addMedia.setString(2, genre);
             addMedia.executeUpdate();
+
             mediaId = addMedia.getResultSet().getInt(1);
             PreparedStatement addAddedContent = connection.prepareStatement(insertAddedContent);
             addAddedContent.setInt(1, mediaId);
@@ -215,6 +213,63 @@ public class SQLHandler implements Query {
         } catch (SQLException e) {
             throw new QueryException(e.getSQLState());
         }
+    }
+
+    @Override
+    public void addReview(String reviewText, int rate, User user) throws QueryException {
+
+    }
+
+
+
+    @Override
+    public Movie getMovieById(int id) throws QueryException {
+        Movie movie= null;
+        ResultSet rs = null;
+        try{
+            String query = "SELECT * FROM view_GetMovieDirectorUserId WHERE movieId"+id;
+            Statement statement = connection.createStatement();
+            rs = statement.executeQuery(query);
+            while (rs.next()){
+                movie= new Movie(rs.getInt("movieId"),
+                                rs.getInt("mediaId"),
+                                rs.getString("title"),
+                                rs.getInt("directorId"),
+                                rs.getInt("userId"),
+                                rs.getString("genre"));
+            }
+        }catch (SQLException e){
+            throw  new QueryException(e.getSQLState());
+        }finally {
+            if (rs!=null){
+                closeResultSet(rs);
+            }
+
+        }
+        return movie;
+    }
+
+    @Override
+    public Director getDirectorById(int id) throws QueryException {
+        Director director = null;
+        ResultSet rs = null;
+
+        try {
+            String query = "SELECT * FROM Director WHERE directorId="+ id;
+            Statement statement = connection.createStatement();
+            rs = statement.executeQuery(query);
+            while (rs.next()){
+                director =new Director(rs.getInt("directorId"),rs.getString("directorName"));
+            }
+        }catch (SQLException e){
+            throw new QueryException(e.getSQLState());
+        }finally {
+            if (rs!= null){
+                closeResultSet(rs);
+            }
+
+        }
+        return director;
     }
 
     @Override
@@ -279,6 +334,31 @@ public class SQLHandler implements Query {
         return user;
     }
 
+    @Override
+    public Album getAlbumById(int id) throws QueryException {
+        Album album = null;
+        ArrayList<Song> songs = new ArrayList<Song>();
+        ResultSet rs = null;
+
+        try {
+            String query ="SELECT * FROM AlbumSong WHERE albumId="+ id;
+            Statement statement = connection.createStatement();
+            rs= statement.executeQuery(query);
+            while (rs.next()){
+                 songs.add(getSongById(rs.getInt("songId")));
+            }
+
+        }catch (SQLException e){
+            throw new QueryException(e.getSQLState());
+        }finally {
+            if(rs!=null){
+                closeResultSet(rs);
+            }
+        }
+        System.out.print(songs.toString());
+        return album;
+    }
+
     private void closeResultSet(ResultSet rs) {
         try {
             rs.close();
@@ -286,4 +366,5 @@ public class SQLHandler implements Query {
             System.exit(e.getErrorCode());
         }
     }
+
 }
