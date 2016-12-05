@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.collections.*?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.lang.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Test">
+   <top>
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="User">
+            <items>
+              <MenuItem fx:id="menuLogin" mnemonicParsing="false" text="Login" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+   <center>
+      <TabPane prefHeight="371.0" prefWidth="401.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+        <tabs>
+          <Tab text="Search">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TextField fx:id="textSearch" layoutX="271.0" layoutY="14.0" prefHeight="27.0" prefWidth="239.0" />
+                        <Button fx:id="btnSearch" layoutX="529.0" layoutY="14.0" mnemonicParsing="false" text="Search" />
+                        <ComboBox fx:id="comboBoxSearchFor" layoutX="10.0" layoutY="14.0" prefHeight="27.0" prefWidth="133.0" promptText="Search for">
+                         <items>
+                             <FXCollections fx:factory="observableArrayList">
+                                 <String fx:value="Media" />
+                                 <String fx:value="Movie" />
+                                 <String fx:value="Album" />
+                                 <String fx:value="Song" />
+                                 <String fx:value="Artist" />
+                                 <String fx:value="Director" />
+                                 <String fx:value="User" />
+                             </FXCollections>
+                         </items>
+                     </ComboBox>
+                        <ComboBox fx:id="comboBoxSearchBy" layoutX="150.0" layoutY="14.0" prefHeight="27.0" prefWidth="113.0" promptText="Search by">
+                           <items>
+                              <FXCollections fx:factory="observableArrayList">
+                                 <String fx:value="ID" />
+                                 <String fx:value="Name" />
+                              </FXCollections>
+                           </items>
+                        </ComboBox>
+                        <ListView fx:id="searchView" layoutX="12.0" layoutY="74.0" prefHeight="263.0" prefWidth="579.0" />
+                        <Button fx:id="btnClearView" layoutX="23.0" layoutY="44.0" mnemonicParsing="false" text="Clear" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="Add">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+   </center>
+</BorderPane>
