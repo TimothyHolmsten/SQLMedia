@@ -721,33 +721,29 @@ public class SQLHandler implements Query {
     }
 
     @Override
-    public ArrayList<Album> getAlbumsByArtist(String artistName) {
-        ArrayList<Album> songs = new ArrayList<>();
+    public ArrayList<Album> getAlbumsByArtist(String artistName) throws QueryException {
+        ArrayList<Album> albums = new ArrayList<>();
         ResultSet rs = null;
-        try{
-            String query = String.format("SELECT * FROM view_GetSongMediaUserIdArtist WHERE artistName='%s'",artistName);
+        try {
+            String query = String.format("SELECT * FROM view_GetAlbumMediaUser, Artist WHERE artistName='%s'", artistName);
             Statement statement = connection.createStatement();
-            rs= statement.executeQuery(query);
-            while (rs.next()) {
-
-                songs.add(new Song(rs.getInt("songId"),
+            rs = statement.executeQuery(query);
+            while (rs.next())
+                albums.add(new Album(
+                        rs.getInt("albumId"),
                         rs.getInt("mediaId"),
                         rs.getString("title"),
                         rs.getInt("userId"),
-                        rs.getString("genre")));
-
-
-            }
-
-        }catch (SQLException e){
-            throw  new QueryException(e.getMessage();
-        }finally {
-            if(rs!= null){
+                        rs.getString("genre")
+                ));
+        } catch (SQLException e) {
+            throw new QueryException(e.getMessage());
+        } finally {
+            if (rs != null) {
                 closeResultSet(rs);
             }
         }
-
-        return songs;
+        return albums;
     }
 
     @Override
