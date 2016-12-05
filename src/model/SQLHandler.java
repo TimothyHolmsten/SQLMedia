@@ -235,7 +235,7 @@ public class SQLHandler implements Query {
         Director director = null;
         ResultSet rs = null;
         try{
-            String query ="SELECT * FROM Directo WHERE Director.directorId= "+ id;
+            String query ="SELECT * FROM Director WHERE Director.directorId= "+ id;
             Statement statement = connection.createStatement();
             rs = statement.executeQuery(query);
             while(rs.next()){
