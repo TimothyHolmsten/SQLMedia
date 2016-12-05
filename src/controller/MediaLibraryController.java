@@ -12,7 +12,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-public class Test implements Initializable {
+public class MediaLibraryController implements Initializable {
 
     private SQLHandler sql;
 
@@ -32,8 +32,13 @@ public class Test implements Initializable {
     private MenuItem menuLogin;
 
 
-    public Test() throws SQLException, ClassNotFoundException {
-        sql = new SQLHandler();
+    public MediaLibraryController() throws ClassNotFoundException {
+        try {
+            sql = new SQLHandler();
+        } catch (SQLException e) {
+            showErrorMessage("Could not connect to database");
+            System.exit(e.getErrorCode());
+        }
 
     }
 
