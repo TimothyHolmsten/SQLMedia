@@ -697,7 +697,27 @@ public class SQLHandler implements Query {
 
     @Override
     public ArrayList<Song> getSongsByArtist(String artistName) throws QueryException {
-        return null;
+        ArrayList<Song> songs = new ArrayList<>();
+        ResultSet rs = null;
+        String query = String.format("SELECT * FROM view_GetSongMediaUserIdArtist WHERE artistName = '%s'");
+        try {
+            Statement statement = connection.createStatement();
+            rs = statement.executeQuery(query);
+            while (rs.next())
+                songs.add(new Song(
+                        rs.getInt("songId"),
+                        rs.getInt("mediaId"),
+                        rs.getString("title"),
+                        rs.getInt("userId"),
+                        rs.getString("genre")
+                ));
+        } catch (SQLException e) {
+            throw new QueryException(e.getMessage());
+        } finally {
+            if (rs != null)
+                closeResultSet(rs);
+        }
+        return songs;
     }
 
     @Override
