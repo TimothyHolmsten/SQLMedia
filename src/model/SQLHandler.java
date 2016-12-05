@@ -20,16 +20,19 @@ public class SQLHandler implements Query {
 
 
     @Override
-    public void addDirector(String directorName) throws QueryException {
+    public int addDirector(String directorName) throws QueryException {
         String insertDirector = "INSERT INTO Director(directorName) VALUES(?);";
+        int directorId;
         try {
             PreparedStatement addDirector = connection.prepareStatement(insertDirector);
             addDirector.setString(1, directorName);
             if (addDirector.executeUpdate() < 1)
                 throw new QueryException("Could not add director");
+            directorId = lastInsertId("directorId");
         } catch (SQLException e) {
             throw new QueryException(e.getSQLState());
         }
+        return directorId;
     }
 
     @Override
@@ -230,6 +233,25 @@ public class SQLHandler implements Query {
     @Override
     public Director getDirectorById(int id) throws QueryException {
         return null;
+    }
+
+    @Override
+    public ArrayList<Director> getDirectors() throws QueryException {
+        ArrayList<Director> directors = new ArrayList<>();
+        ResultSet rs = null;
+        String query = "SELECT * FROM Director";
+        try {
+            Statement statement = connection.createStatement();
+            rs = statement.executeQuery(query);
+            while (rs.next())
+                directors.add(new Director(rs.getInt("directorId"), rs.getString("directorName")));
+        } catch (SQLException e) {
+            throw new QueryException(e.getSQLState());
+        } finally {
+            if(rs != null)
+                closeResultSet(rs);
+        }
+        return directors;
     }
 
     @Override
