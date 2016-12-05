@@ -28,4 +28,5 @@ public interface Query {
     Album getAlbumById(int id) throws QueryException;
 
 
+
 }
