@@ -32,7 +32,11 @@ public class User extends Person {
 
     @Override
     public String toString() {
-        return String.format("ID: %d, Name: %s, Reviews: %s",
-                userId, getName(), reviews.toString());
+        if (reviews.size() > 0)
+            return String.format("ID: %d, Name: %s, Reviews: %s",
+                    userId, getName(), reviews.toString());
+        else
+            return String.format("ID: %d, Name: %s",
+                    userId, getName());
     }
 }

@@ -209,12 +209,17 @@ public class SQLHandler implements Query {
         try {
             PreparedStatement addUser = connection.prepareStatement(insertUser);
             addUser.setString(1, userName);
-            if(addUser.executeUpdate() < 1) {
+            if (addUser.executeUpdate() < 1) {
                 throw new QueryException("Could add user");
             }
         } catch (SQLException e) {
             throw new QueryException(e.getSQLState());
         }
+    }
+
+    @Override
+    public boolean loginUser(String userName) throws QueryException {
+        return getUserByName(userName) != null;
     }
 
     @Override
@@ -266,6 +271,26 @@ public class SQLHandler implements Query {
         ResultSet rs = null;
         try {
             String query = "SELECT * FROM User WHERE userId = " + id;
+            Statement statement = connection.createStatement();
+            rs = statement.executeQuery(query);
+            while (rs.next())
+                user = new User(rs.getInt("userId"), rs.getString("userName"));
+        } catch (SQLException e) {
+            throw new QueryException(e.getSQLState());
+        } finally {
+            if (rs != null)
+                closeResultSet(rs);
+        }
+        return user;
+    }
+
+    @Override
+    public User getUserByName(String userName) throws QueryException {
+        User user = null;
+        ResultSet rs = null;
+
+        try {
+            String query = String.format("SELECT * FROM User WHERE userName = '%s'", userName);
             Statement statement = connection.createStatement();
             rs = statement.executeQuery(query);
             while (rs.next())

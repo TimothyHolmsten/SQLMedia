@@ -22,7 +22,10 @@ public interface Query {
     int addMedia(String title, String genre, User user) throws QueryException;
     void addUser(String userName) throws QueryException;
 
+    boolean loginUser(String userName) throws QueryException;
+
     Artist getArtistById(int id) throws QueryException;
     Song getSongById(int id) throws QueryException;
     User getUserById(int id) throws QueryException;
+    User getUserByName(String userName) throws QueryException;
 }
