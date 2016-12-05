@@ -130,7 +130,7 @@ public class MediaLibraryController implements Initializable {
             ArrayList<Media> medias = new ArrayList<>();
 
             if(searchFor.equals("Movie")){
-                medias.addAll(sql.getSongsByGenre(searchText));
+                medias.addAll(sql.getMoviesByGenre(searchText));
             }
             if (searchFor.equals("Album")){
                 medias.addAll(sql.getAlbumsByGenre(searchText));
