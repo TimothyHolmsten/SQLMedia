@@ -33,6 +33,7 @@ public interface Query {
     User getUserByName(String userName) throws QueryException;
     ArrayList<Artist> getArtists() throws QueryException;
     ArrayList<Media> getAllMedia() throws QueryException;
+    ArrayList<Movie> getMoviesByTitle(String title) throws QueryException;
 
 
 }

@@ -13,10 +13,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.QueryException;
 import model.SQLHandler;
-import objectmodels.Artist;
-import objectmodels.Director;
-import objectmodels.Song;
-import objectmodels.User;
+import objectmodels.*;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -31,15 +28,22 @@ public class MediaLibraryController implements Initializable {
     private ComboBox<String> comboBoxSearchFor, comboBoxSearchBy;
 
     @FXML
-    private Button btnSearch, btnClearView, btnGetSongs,
-            btnGetDirectors, btnGetArtists;
+    private ComboBox<Integer> comboBoxReviewRating;
+
     @FXML
-    private Button btnAddAlbum, btnAddMovie, btnAddSong;
+    private Button btnSearch, btnClearView, btnGetSongs,
+            btnGetDirectors, btnGetArtists,
+            btnGetMedia;
+    @FXML
+    private Button btnAddAlbum, btnAddMovie, btnAddSong, btnAddReview;
 
     @FXML
     private TextField textSearch, textAlbumTitle,
             textMovieTitle, textMovieDirector, textMovieGenre,
             textSongTitle, textSongGenre, textSongArtist;
+
+    @FXML
+    private TextArea textReview;
 
     @FXML
     private ListView<String> searchView;
@@ -52,6 +56,9 @@ public class MediaLibraryController implements Initializable {
 
     @FXML
     private ListView<Artist> artistView;
+
+    @FXML
+    private ListView<Media> mediaView;
 
     @FXML
     private MenuItem menuLogin;
@@ -87,29 +94,34 @@ public class MediaLibraryController implements Initializable {
         if (searchBy.equals("ID")) {
             int search = Integer.parseInt(searchText);
 
-            if (searchFor.equals("Media")) {
-
-            }
             if (searchFor.equals("Movie")) {
-
+                obj = sql.getMovieById(search);
             }
             if (searchFor.equals("Album")) {
-
+                obj = sql.getAlbumById(search);
             }
             if (searchFor.equals("Song")) {
                 obj = sql.getSongById(search);
             }
-            if (searchFor.equals("Artist")) {
-                obj = sql.getArtistById(search);
-            }
-            if (searchFor.equals("Director")) {
-
-            }
-            if (searchFor.equals("User")) {
-                obj = sql.getUserById(search);
-            }
             if (obj != null)
                 searchView.getItems().addAll(obj.toString());
+            else
+                showErrorMessage("No match found");
+        } else if (searchBy.equals("Title")) {
+            ArrayList<Media> medias = new ArrayList<>();
+
+            if (searchFor.equals("Movie")) {
+                medias.addAll(sql.getMoviesByTitle(searchText));
+            }
+            if (searchFor.equals("Album")) {
+                //obj = sql.getAlbumById(searchText);
+            }
+            if (searchFor.equals("Song")) {
+                //obj = sql.getSongById(searchText);
+            }
+            if (medias.size() > 0)
+                for(Media media: medias)
+                    searchView.getItems().addAll(media.toString());
             else
                 showErrorMessage("No match found");
         }
@@ -258,6 +270,19 @@ public class MediaLibraryController implements Initializable {
                 }
             }
         });
+
+        btnGetMedia.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                mediaView.getItems().clear();
+                try {
+                    mediaView.getItems().addAll(sql.getAllMedia());
+                } catch (QueryException e) {
+                    showErrorMessage(e.getMessage());
+                }
+            }
+        });
+
     }
 
 }
