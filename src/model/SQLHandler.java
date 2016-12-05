@@ -68,7 +68,7 @@ public class SQLHandler implements Query {
     public void addAlbum(String title, ArrayList<Song> songs, User user) throws QueryException {
         String insertAlbum = "INSERT INTO Album(mediaId) VALUES(?);";
         String insertAlbumSong = "INSERT INTO AlbumSong(albumId, songId) VALUES(?, ?);";
-
+        ResultSet rs = null;
         if (songs.size() < 1)
             throw new QueryException("An album must have songs");
 
@@ -82,7 +82,7 @@ public class SQLHandler implements Query {
                 PreparedStatement addAlbum = connection.prepareStatement(insertAlbum);
                 addAlbum.setInt(1, mediaId);
                 updatedAlbum = addAlbum.executeUpdate();
-                albumId = addAlbum.getResultSet().getInt(1);
+                albumId = lastInsertId("albumId");
             } else {
                 connection.rollback();
                 throw new QueryException("Could not add media");
@@ -187,16 +187,19 @@ public class SQLHandler implements Query {
         String insertMedia = "INSERT INTO Media(title, genre) VALUES(?, ?);";
         String insertAddedContent = "INSERT INTO AddedContent(mediaId, userId) VALUES(?, ?);";
         int mediaId;
+        ResultSet rs = null;
         try {
             PreparedStatement addMedia = connection.prepareStatement(insertMedia);
             addMedia.setString(1, title);
             addMedia.setString(2, genre);
             addMedia.executeUpdate();
-            mediaId = addMedia.getResultSet().getInt(1);
-            PreparedStatement addAddedContent = connection.prepareStatement(insertAddedContent);
-            addAddedContent.setInt(1, mediaId);
-            addAddedContent.setInt(2, user.getUserId());
-            addAddedContent.executeUpdate();
+            mediaId = lastInsertId("mediaId");
+            if (mediaId > 0) {
+                PreparedStatement addAddedContent = connection.prepareStatement(insertAddedContent);
+                addAddedContent.setInt(1, mediaId);
+                addAddedContent.setInt(2, user.getUserId());
+                addAddedContent.executeUpdate();
+            }
         } catch (SQLException e) {
             throw new QueryException(e.getSQLState());
         }
@@ -304,11 +307,53 @@ public class SQLHandler implements Query {
         return user;
     }
 
+    @Override
+    public ArrayList<Song> getSongs() throws QueryException {
+        ArrayList<Song> songs = new ArrayList<>();
+        ResultSet rs = null;
+
+        try {
+            String query = "SELECT * FROM view_GetSongMediaUserId";
+            Statement statement = connection.createStatement();
+            rs = statement.executeQuery(query);
+            while (rs.next())
+                songs.add(new Song(
+                        rs.getInt("songId"),
+                        rs.getInt("mediaId"),
+                        rs.getString("title"),
+                        rs.getInt("userId"),
+                        rs.getString("genre")));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null)
+                closeResultSet(rs);
+        }
+        return songs;
+    }
+
     private void closeResultSet(ResultSet rs) {
         try {
             rs.close();
         } catch (SQLException e) {
             System.exit(e.getErrorCode());
         }
+    }
+
+    private int lastInsertId(String id) {
+        Statement statement = null;
+        ResultSet rs = null;
+        int lastInsert = 0;
+        try {
+            statement = connection.createStatement();
+            String query = "SELECT LAST_INSERT_ID() AS " + id;
+            rs = statement.executeQuery(query);
+            while (rs.next())
+                lastInsert = rs.getInt(id);
+            closeResultSet(rs);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lastInsert;
     }
 }

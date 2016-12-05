@@ -3,24 +3,22 @@ package controller;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.QueryException;
 import model.SQLHandler;
+import objectmodels.Song;
 import objectmodels.User;
 
-import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class MediaLibraryController implements Initializable {
@@ -31,16 +29,24 @@ public class MediaLibraryController implements Initializable {
     private ComboBox<String> comboBoxSearchFor, comboBoxSearchBy;
 
     @FXML
-    private Button btnSearch, btnClearView;
+    private Button btnSearch, btnClearView, btnGetSongs;
+    @FXML
+    private Button btnAddAlbum;
 
     @FXML
-    private TextField textSearch;
+    private TextField textSearch, textAlbumTitle;
 
     @FXML
     private ListView<String> searchView;
 
     @FXML
+    private ListView<Song> songView;
+
+    @FXML
     private MenuItem menuLogin;
+
+    @FXML
+    private Tab addTab;
 
     private User client;
 
@@ -135,19 +141,44 @@ public class MediaLibraryController implements Initializable {
                             client = sql.getUserByName(txtUserName.getText());
                             if (client == null)
                                 showErrorMessage("User not found");
+                            else
+                                addTab.setDisable(false);
                         } catch (QueryException e) {
                             showErrorMessage("Could not login");
-                        }
-                        finally {
+                        } finally {
                             stage.close();
                         }
                     }
                 });
 
                 VBox vbox = new VBox(new Text("Login as user"), txtUserName, btnLogin);
-                vbox.setPadding(new Insets(10,10,10,10));
+                vbox.setPadding(new Insets(10, 10, 10, 10));
                 stage.setScene(new Scene(vbox));
                 stage.showAndWait();
+            }
+        });
+        btnGetSongs.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                try {
+                    songView.getItems().clear();
+                    songView.getItems().addAll(sql.getSongs());
+                } catch (QueryException e) {
+                    showErrorMessage(e.getMessage());
+                }
+            }
+        });
+
+        btnAddAlbum.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                ArrayList<Song> songs = new ArrayList<>();
+                songs.addAll(songView.getSelectionModel().getSelectedItems());
+                try {
+                    sql.addAlbum(textAlbumTitle.getText(), songs, client);
+                } catch (QueryException e) {
+                    showErrorMessage(e.getMessage());
+                }
             }
         });
     }
