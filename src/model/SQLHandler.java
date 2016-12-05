@@ -535,6 +535,84 @@ public class SQLHandler implements Query {
         return movies;
     }
 
+    @Override
+    public ArrayList<Song> getSongsByTitle(String title) throws QueryException {
+        ArrayList<Song> songs = new ArrayList<>();
+        ResultSet rs= null;
+        String query =String.format("SELECT * FROM view_GetSongMediaUserIdArtist WHERE title ='%s'",title);
+        try {
+            Statement statement = connection.createStatement();
+            rs= statement.executeQuery(query);
+            while (rs.next()){
+                songs.add(new Song(rs.getInt("songId"),
+                                    rs.getInt("mediaId"),
+                                    rs.getString("title"),
+                                    rs.getInt("userId"),
+                                    rs.getString("genre"),
+                                    getSongArtists(rs.getInt("songId"))));
+            }
+        }catch ( SQLException e ){
+            throw  new QueryException(e.getMessage());
+        }finally {
+            {
+                if(rs!=null){
+                    closeResultSet(rs);
+                }
+            }
+        }
+        return songs;
+    }
+
+    @Override
+    public ArrayList<Album> getAlbumsByTitle(String title) throws QueryException {
+        ArrayList<Album> albums = new ArrayList<>();
+        ResultSet rs = null;
+        String query = String.format("SELECT * FROM view_GetAlbumMediaUSer title= '%s'",title);
+        try{
+            Statement statement =connection.createStatement();
+            rs= statement.executeQuery(query);
+        }catch (SQLException e){
+            throw new QueryException(e.getMessage());
+        }finally {
+             if (rs!=null){
+                 closeResultSet(rs);
+             }
+        }
+        return albums ;
+    }
+
+    @Override
+    public ArrayList<Movie> getMoviesByGenre(String genre) throws QueryException {
+
+        return null;
+    }
+
+    @Override
+    public ArrayList<Song> getSongsByGenre(String genre) throws QueryException {
+        return null;
+    }
+
+    @Override
+    public ArrayList<Album> getAlbumsByGenre(String genre) throws QueryException {
+        return null;
+    }
+
+    @Override
+    public ArrayList<Movie> getMoviesByDirector(String directorName) throws QueryException {
+        return null;
+    }
+
+    @Override
+    public ArrayList<Song> getSongsByArtist(String artistName) {
+        return null;
+    }
+
+    @Override
+    public ArrayList<Album> getAlbumsByArtist(String artistName) {
+        return null;
+    }
+
+    @Override
     public ArrayList<Album> getAlbums() throws QueryException {
         ArrayList<Album> albums = new ArrayList<>();
         ResultSet rs = null;
@@ -559,7 +637,7 @@ public class SQLHandler implements Query {
         }
         return albums;
     }
-
+    @Override
     public ArrayList<Movie> getMovies() throws QueryException {
         ArrayList<Movie> movies = new ArrayList<>();
         ResultSet rs = null;

@@ -7,6 +7,7 @@ import model.QueryException;
 import model.SQLHandler;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import objectmodels.*;
 public class Main extends Application {

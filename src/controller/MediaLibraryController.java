@@ -117,6 +117,7 @@ public class MediaLibraryController implements Initializable {
                 //obj = sql.getAlbumById(searchText);
             }
             if (searchFor.equals("Song")) {
+                medias.addAll(sql.getSongsByTitle(searchText));
                 //obj = sql.getSongById(searchText);
             }
             if (medias.size() > 0)

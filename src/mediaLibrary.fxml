@@ -48,7 +48,7 @@
                                  <String fx:value="Title" />
                                   <String fx:value="Genre" />
                                   <String fx:value="Director" />
-                                  <String fx:value="Person" />
+                                  <String fx:value="Artist" />
                               </FXCollections>
                            </items>
                         </ComboBox>
