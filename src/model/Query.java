@@ -23,6 +23,7 @@ public interface Query {
     Movie getMovieById(int id) throws QueryException;
     Director getDirectorById(int id) throws QueryException;
     Artist getArtistById(int id) throws QueryException;
+    ArrayList<Artist> getSongArtists(int songId) throws QueryException;
     Song getSongById(int id) throws QueryException;
     User getUserById(int id) throws QueryException;
     Album getAlbumById(int id) throws QueryException;
