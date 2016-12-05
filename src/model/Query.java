@@ -26,6 +26,7 @@ public interface Query {
     Song getSongById(int id) throws QueryException;
     User getUserById(int id) throws QueryException;
     Album getAlbumById(int id) throws QueryException;
-
+    ArrayList<Song> getSongs() throws QueryException;
+    User getUserByName(String userName) throws QueryException;
 
 }
