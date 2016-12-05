@@ -33,9 +33,10 @@ public class MediaLibraryController implements Initializable {
     @FXML
     private Button btnSearch, btnClearView, btnGetSongs,
             btnGetDirectors, btnGetArtists,
-            btnGetMedia;
+            btnGetMedia,
+            btnUpdateArtists2, btnUpdateSongs2;
     @FXML
-    private Button btnAddAlbum, btnAddMovie, btnAddSong, btnAddReview;
+    private Button btnAddAlbum, btnAddMovie, btnAddSong, btnAddReview, btnAddArtistToSong;
 
     @FXML
     private TextField textSearch, textAlbumTitle,
@@ -49,13 +50,13 @@ public class MediaLibraryController implements Initializable {
     private ListView<String> searchView;
 
     @FXML
-    private ListView<Song> songView;
+    private ListView<Song> songView, song2View;
 
     @FXML
     private ListView<Director> directorView;
 
     @FXML
-    private ListView<Artist> artistView;
+    private ListView<Artist> artistView, artist2View;
 
     @FXML
     private ListView<Media> mediaView;
@@ -64,7 +65,7 @@ public class MediaLibraryController implements Initializable {
     private MenuItem menuLogin;
 
     @FXML
-    private Tab addTab;
+    private Tab addTab, reviewTab;
 
     private User client;
 
@@ -121,7 +122,7 @@ public class MediaLibraryController implements Initializable {
                 //obj = sql.getSongById(searchText);
             }
             if (medias.size() > 0)
-                for(Media media: medias)
+                for (Media media : medias)
                     searchView.getItems().addAll(media.toString());
             else
                 showErrorMessage("No match found");
@@ -165,8 +166,10 @@ public class MediaLibraryController implements Initializable {
                             client = sql.getUserByName(txtUserName.getText());
                             if (client == null)
                                 showErrorMessage("User not found");
-                            else
+                            else {
                                 addTab.setDisable(false);
+                                reviewTab.setDisable(false);
+                            }
                         } catch (QueryException e) {
                             showErrorMessage("Could not login");
                         } finally {
@@ -284,6 +287,63 @@ public class MediaLibraryController implements Initializable {
             }
         });
 
+        btnAddReview.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if (comboBoxReviewRating.getValue() == null) {
+                    showErrorMessage("Must have a rating");
+                } else {
+                    try {
+                        sql.addReview(textReview.getText(), comboBoxReviewRating.getValue(), client, mediaView.getSelectionModel().getSelectedItem().getMediaId());
+                    } catch (QueryException e) {
+                        showErrorMessage(e.getMessage());
+                    }
+                }
+            }
+        });
+
+        btnUpdateArtists2.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                artist2View.getItems().clear();
+                try {
+                    artist2View.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+                    artist2View.getItems().addAll(sql.getArtists());
+                } catch (QueryException e) {
+                    showErrorMessage(e.getMessage());
+                }
+            }
+        });
+
+        btnUpdateSongs2.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                song2View.getItems().clear();
+                try {
+                    song2View.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+                    song2View.getItems().addAll(sql.getSongs());
+                } catch (QueryException e) {
+                    showErrorMessage(e.getMessage());
+                }
+            }
+        });
+
+        btnAddArtistToSong.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if (artist2View.getSelectionModel().getSelectedItems() == null || song2View.getSelectionModel().getSelectedItems() == null)
+                    showErrorMessage("Must select both artist and song");
+                else {
+                    for (Artist artist : artist2View.getSelectionModel().getSelectedItems())
+                        for (Song song : song2View.getSelectionModel().getSelectedItems())
+                            try {
+                                sql.addArtistToSong(artist, song, client);
+                            } catch (QueryException e) {
+                                showErrorMessage(e.getMessage());
+                            }
+                }
+            }
+        });
     }
 
 }
