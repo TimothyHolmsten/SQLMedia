@@ -4,17 +4,9 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import model.QueryException;
 import model.SQLHandler;
-import objectmodels.Song;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -45,33 +37,47 @@ public class Test implements Initializable {
 
     }
 
+    private void showErrorMessage(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR, message);
+        alert.showAndWait();
+    }
+
     private void search(String searchFor, String searchBy, String searchText) throws QueryException {
-        if(searchFor == null || searchBy == null)
+        if (searchFor == null || searchBy == null) {
             // Add error window
-            System.out.println("Cannot search");
-        if(searchBy.equals("ID")) {
-            if(searchFor.equals("Media")) {
+            showErrorMessage("Can not search for null");
+            return;
+        }
+        Object obj = null;
+
+        if (searchBy.equals("ID")) {
+            int search = Integer.parseInt(searchText);
+
+            if (searchFor.equals("Media")) {
 
             }
-            if(searchFor.equals("Movie")) {
+            if (searchFor.equals("Movie")) {
 
             }
-            if(searchFor.equals("Album")) {
+            if (searchFor.equals("Album")) {
 
             }
-            if(searchFor.equals("Song")) {
-                Song song = sql.getSongById(Integer.parseInt(searchText));
-                searchView.getItems().addAll(song.toString());
+            if (searchFor.equals("Song")) {
+                obj = sql.getSongById(search);
             }
-            if(searchFor.equals("Artist")) {
+            if (searchFor.equals("Artist")) {
+                obj = sql.getArtistById(search);
+            }
+            if (searchFor.equals("Director")) {
 
             }
-            if(searchFor.equals("Director")) {
-
+            if (searchFor.equals("User")) {
+                obj = sql.getUserById(search);
             }
-            if(searchFor.equals("User")) {
-
-            }
+            if (obj != null)
+                searchView.getItems().addAll(obj.toString());
+            else
+                showErrorMessage("No match found");
         }
     }
 
@@ -83,7 +89,7 @@ public class Test implements Initializable {
                 try {
                     search(comboBoxSearchFor.getValue(), comboBoxSearchBy.getValue(), textSearch.getText());
                 } catch (QueryException e) {
-                    e.printStackTrace();
+                    showErrorMessage(e.getMessage());
                 }
             }
         });
@@ -97,15 +103,7 @@ public class Test implements Initializable {
         menuLogin.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Stage dialogStage = new Stage();
-                dialogStage.initModality(Modality.WINDOW_MODAL);
 
-                VBox vbox = new VBox(new Text("Hi"), new Button("Ok."));
-                vbox.setAlignment(Pos.CENTER);
-                vbox.setPadding(new Insets(15));
-
-                dialogStage.setScene(new Scene(vbox));
-                dialogStage.show();
             }
         });
     }

@@ -41,7 +41,7 @@ public class Review {
 
     @Override
     public String toString() {
-        return String.format("ID: %d, Rating: %d",
-                reviewId, rating);
+        return String.format("ID: %d, Rating: %d, Comment: %s",
+                reviewId, rating, reviewText);
     }
 }
