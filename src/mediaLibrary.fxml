@@ -45,7 +45,10 @@
                                     <items>
                                         <FXCollections fx:factory="observableArrayList">
                                             <String fx:value="ID" />
-                                            <String fx:value="Name" />
+                                            <String fx:value="Title" />
+                                            <String fx:value="Genre" />
+                                            <String fx:value="Artist" />
+                                            <String fx:value="Director" />
                                         </FXCollections>
                                     </items>
                                 </ComboBox>

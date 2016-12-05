@@ -115,7 +115,7 @@ public class MediaLibraryController implements Initializable {
                 medias.addAll(sql.getMoviesByTitle(searchText));
             }
             if (searchFor.equals("Album")) {
-                //obj = sql.getAlbumById(searchText);
+                medias.addAll(sql.getAlbumsByTitle(searchText));
             }
             if (searchFor.equals("Song")) {
                 medias.addAll(sql.getSongsByTitle(searchText));
@@ -126,6 +126,9 @@ public class MediaLibraryController implements Initializable {
                     searchView.getItems().addAll(media.toString());
             else
                 showErrorMessage("No match found");
+        }
+        else if (searchBy.equals("Genre")) {
+
         }
     }
 
