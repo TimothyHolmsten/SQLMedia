@@ -20,6 +20,7 @@ public class Song extends Media {
 
     public Song(int songId, int mediaId, String title, int userId, String genre, ArrayList<Artist> artists) {
         super(mediaId, title, userId, genre);
+        this.songId = songId;
         this.artists = artists;
     }
 
