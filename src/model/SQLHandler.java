@@ -4,6 +4,7 @@ import objectmodels.*;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Created by timothy on 2016-11-28.
@@ -224,12 +225,30 @@ public class SQLHandler implements Query {
 
     @Override
     public Movie getMovieById(int id) throws QueryException {
-        return null;
+        Movie movie = null;
+        ResultSet rs = null;
+    return movie;
     }
 
     @Override
     public Director getDirectorById(int id) throws QueryException {
-        return null;
+        Director director = null;
+        ResultSet rs = null;
+        try{
+            String query ="SELECT * FROM Directo WHERE Director.directorId= "+ id;
+            Statement statement = connection.createStatement();
+            rs = statement.executeQuery(query);
+            while(rs.next()){
+               director = new Director(rs.getInt("directorId"),rs.getString("directorName"));
+            }
+        }catch(SQLException e){
+            throw  new QueryException(e.getSQLState());
+        }finally {
+            if (rs!=null){
+                closeResultSet(rs);
+            }
+        }
+        return  director;
     }
 
     @Override
@@ -296,7 +315,38 @@ public class SQLHandler implements Query {
 
     @Override
     public Album getAlbumById(int id) throws QueryException {
-        return null;
+
+        Album album = null;
+        ResultSet rs = null;
+        ArrayList<Song> songs= new ArrayList<>();
+
+        try {
+
+            String querySongs = "SELECT * FROM AlbumSong WHERE albumId="+ id;
+            Statement StatementSongs = connection.createStatement();
+            StatementSongs.execute(querySongs);
+            rs = StatementSongs.executeQuery(querySongs);
+            while(rs.next()){
+                songs.add(getSongById(rs.getInt("songId")));
+            }
+            rs=null;
+            String queryAlbum = "SELECT * FROM view_GetAlbumMediaUser where albumId="+id;
+            Statement StatementAlbum  = connection.createStatement();
+            StatementAlbum.execute(queryAlbum);
+            rs = StatementAlbum.executeQuery(queryAlbum);
+            while(rs.next()){
+                album = new Album(rs.getInt("mediaId"),
+                                rs.getString("title"),
+                                rs.getInt("userId"),
+                                rs.getString("genre"),
+                                songs);
+            }
+        }catch (SQLException e){
+            throw  new QueryException(e.getSQLState());
+        }finally {
+            closeResultSet(rs);
+        }
+        return  album;
     }
 
     @Override
@@ -368,4 +418,5 @@ public class SQLHandler implements Query {
         }
         return lastInsert;
     }
+
 }

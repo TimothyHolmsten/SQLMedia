@@ -8,6 +8,7 @@ import model.SQLHandler;
 
 import java.sql.SQLException;
 
+import objectmodels.*;
 public class Main extends Application {
 
     @Override
@@ -20,12 +21,13 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        Application.launch(args);
-        /*SQLHandler sql = null;
+       // Application.launch(args);
+        SQLHandler sql = null;
         try {
             sql = new SQLHandler();
             //   System.out.println(sql.getArtistById(1).getName());
-
+            Album album= sql.getAlbumById(1);
+            System.out.print(album.toString());
             //   sql.addArtistToSong(sql.getArtistById(1), sql.getSongById(1), sql.getUserById(1));
         } catch (SQLException e) {
             e.printStackTrace();
@@ -33,6 +35,6 @@ public class Main extends Application {
             e.printStackTrace();
         } catch (QueryException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 }

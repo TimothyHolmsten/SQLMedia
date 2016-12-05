@@ -31,7 +31,7 @@ public class Album extends Media {
 
     @Override
     public String toString() {
-        return String.format("ID: %d, Title: %s, Genre: %s, Added By: %d, Songs: %s",
+        return String.format("ID: %d, Title: %s, Genre: %s, Added By: %d, Songs: %s /n",
                 albumId, getTitle(), getGenre(), getAddedByUserId(), songs.toString());
     }
 }
