@@ -19,7 +19,7 @@ public interface Query {
     void addArtistToSong(Artist artist, Song song, User user) throws QueryException;
     int addMedia(String title, String genre, User user) throws QueryException;
     void addUser(String userName) throws QueryException;
-    void addReview(String reviewText, int rate , User user) throws QueryException;
+    void addReview(String reviewText, int rating , User user,int mediaId) throws QueryException;
 
     Movie getMovieById(int id) throws QueryException;
     Director getDirectorById(int id) throws QueryException;

@@ -262,14 +262,35 @@ public class SQLHandler implements Query {
     }
 
     @Override
-    public void addReview(String reviewText, int rate, User user) throws QueryException {
+    public void  addReview(String reviewText, int rating, User user, int mediaId) throws QueryException {
+        String insertReview="insert into Review(reviewText,rating,mediaId,userId) Values(?,?,?,?)";
+        try {
+            connection.setAutoCommit(false);
+            PreparedStatement addReview = connection.prepareStatement(insertReview);
+            addReview.setString(1,reviewText);
+            addReview.setInt(2, rating);
+            addReview.setInt(3,user.getUserId());
+            addReview.setInt(4,mediaId);
+            if( addReview.executeUpdate()<1){
+                connection.rollback();
 
+                throw new QueryException("could add review");
+            }
+            connection.commit();
+
+        } catch (SQLException e) {
+
+            throw new QueryException(e.getMessage());
+        } finally {
+            turnAutoCommitOn();
+        }
     }
 
     @Override
     public Movie getMovieById(int id) throws QueryException {
         Movie movie = null;
         ResultSet rs = null;
+
         return movie;
     }
 
