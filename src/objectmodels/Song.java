@@ -12,22 +12,51 @@ public class Song extends Media {
 
     private ArrayList<Artist> artists;
 
+    /**
+     * Represent a song entity of the database
+     *
+     * @param songId  id of the song
+     * @param mediaId id of the media that the song belongs to
+     * @param title   title of the song
+     * @param userId  id of the user who added the song
+     * @param genre   genre of the song
+     */
     public Song(int songId, int mediaId, String title, int userId, String genre) {
         super(mediaId, title, userId, genre);
         this.songId = songId;
         artists = new ArrayList<>();
     }
 
+    /**
+     * Represent a song entity of the database
+     *
+     * @param songId  id of the song
+     * @param mediaId id of the media that the song belongs to
+     * @param title   title of the song
+     * @param userId  id of the user who added the song
+     * @param genre   genre of the song
+     * @param artists artists that made the song
+     */
     public Song(int songId, int mediaId, String title, int userId, String genre, ArrayList<Artist> artists) {
         super(mediaId, title, userId, genre);
         this.songId = songId;
         this.artists = artists;
     }
 
+    /**
+     * Returns a clone of the artists that made the song
+     *
+     * @return clone of artists
+     */
     public ArrayList<Artist> getArtists() {
         return (ArrayList<Artist>) artists.clone();
     }
 
+    /**
+     * Returns the id of the song
+     *
+     * @return id of song
+     */
     public int getSongId() {
         return songId;
     }

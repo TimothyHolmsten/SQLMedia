@@ -79,6 +79,14 @@ public class MediaLibraryController implements Initializable {
         }
     }
 
+    public void closeConnection() {
+        try {
+            sql.closeConnection();
+        } catch (QueryException e) {
+            showErrorMessage(e.getMessage());
+        }
+    }
+
     private void showErrorMessage(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR, message);
         alert.showAndWait();
@@ -125,18 +133,17 @@ public class MediaLibraryController implements Initializable {
                     searchView.getItems().addAll(media.toString());
             else
                 showErrorMessage("No match found");
-        }
-        else if (searchBy.equals("Genre")) {
+        } else if (searchBy.equals("Genre")) {
             ArrayList<Media> medias = new ArrayList<>();
 
-            if(searchFor.equals("Movie")){
+            if (searchFor.equals("Movie")) {
                 medias.addAll(sql.getMoviesByGenre(searchText));
             }
-            if (searchFor.equals("Album")){
+            if (searchFor.equals("Album")) {
                 medias.addAll(sql.getAlbumsByGenre(searchText));
 
             }
-            if(searchFor.equals("Song")){
+            if (searchFor.equals("Song")) {
                 medias.addAll(sql.getSongsByGenre(searchText));
 
             }
@@ -146,14 +153,13 @@ public class MediaLibraryController implements Initializable {
             else
                 showErrorMessage("No match found");
 
-        }
-        else if (searchBy.equals("Artist")){
+        } else if (searchBy.equals("Artist")) {
             ArrayList<Media> medias = new ArrayList<>();
 
-            if(searchFor.equals("Album")){
+            if (searchFor.equals("Album")) {
                 medias.addAll(sql.getAlbumsByArtist(searchText));
             }
-            if (searchFor.equals("Song")){
+            if (searchFor.equals("Song")) {
                 medias.addAll(sql.getSongsByArtist(searchText));
 
             }
@@ -163,10 +169,10 @@ public class MediaLibraryController implements Initializable {
             else
                 showErrorMessage("No Match found");
 
-        }else if(searchBy.equals("Director")){
+        } else if (searchBy.equals("Director")) {
             ArrayList<Media> medias = new ArrayList<>();
 
-            if (searchFor.equals("Movie")){
+            if (searchFor.equals("Movie")) {
                 medias.addAll(sql.getMoviesByDirector(searchText));
             }
             if (medias.size() > 0)
@@ -174,13 +180,13 @@ public class MediaLibraryController implements Initializable {
                     searchView.getItems().addAll(media.toString());
             else
                 showErrorMessage("No Match found");
-        } else if(searchBy.equals("Rating")) {
+        } else if (searchBy.equals("Rating")) {
             ArrayList<Media> medias = new ArrayList<>();
 
-            if (searchFor.equals("Movie")){
+            if (searchFor.equals("Movie")) {
                 medias.addAll(sql.getMoviesByRating(Integer.parseInt(searchText)));
             }
-            if (searchFor.equals("Song")){
+            if (searchFor.equals("Song")) {
                 medias.addAll(sql.getSongsByRating(Integer.parseInt(searchText)));
             }
             if (medias.size() > 0)
@@ -331,8 +337,6 @@ public class MediaLibraryController implements Initializable {
                     }
 
                 } catch (QueryException e) {
-                    System.out.println(e.getMessage());
-                    e.printStackTrace();
                     showErrorMessage(e.getMessage());
                 }
             }

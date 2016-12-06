@@ -1,28 +1,35 @@
+import controller.MediaLibraryController;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import model.QueryException;
-import model.SQLHandler;
+import javafx.stage.WindowEvent;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-
-import objectmodels.*;
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        Parent root = FXMLLoader.load(getClass().getResource("mediaLibrary.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("mediaLibrary.fxml"));
+        //Parent root = FXMLLoader.load(getClass().getResource("mediaLibrary.fxml"));
+        Parent root = (Parent) loader.load();
         primaryStage.setTitle("Media Library");
         primaryStage.setScene(new Scene(root));
+        MediaLibraryController controller = loader.getController();
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                System.out.println("Closing connection...");
+                controller.closeConnection();
+            }
+        });
         primaryStage.show();
     }
 
     public static void main(String[] args) {
-       Application.launch(args);
+        Application.launch(args);
 
     }
 }
