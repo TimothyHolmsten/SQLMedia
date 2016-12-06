@@ -656,7 +656,7 @@ public class SQLHandler implements Query {
     public ArrayList<Song> getSongsByGenre(String genre) throws QueryException {
         ArrayList<Song> songs = new ArrayList<>();
         ResultSet rs = null;
-        String query = String.format("SELECT * FROM view_GetSongMediaUserIdArtist WHERE '%s'", genre);
+        String query = String.format("SELECT * FROM view_GetSongMediaUserIdArtist WHERE genre='%s'", genre);
         try {
             Statement statement = connection.createStatement();
             rs = statement.executeQuery(query);
