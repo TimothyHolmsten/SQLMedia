@@ -13,9 +13,16 @@ public class SQLHandler implements Query {
 
     public SQLHandler() throws SQLException, ClassNotFoundException {
         Class.forName("com.mysql.jdbc.Driver");
-        connection = DriverManager.getConnection(SERVER, "root", "1234");
+        connection = DriverManager.getConnection(SERVER, "NormalUser", "");
     }
 
+    public void closeConnection() throws QueryException {
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            throw new QueryException(e.getMessage());
+        }
+    }
 
     @Override
     public int addDirector(String directorName) throws QueryException {
@@ -130,7 +137,7 @@ public class SQLHandler implements Query {
             try {
                 connection.rollback();
             } catch (SQLException rollbackException) {
-                rollbackException.printStackTrace();
+                throw new QueryException(rollbackException.getMessage());
             }
             throw new QueryException(e.getMessage());
         }
@@ -523,7 +530,7 @@ public class SQLHandler implements Query {
                         rs.getString("artistName"),
                         rs.getInt("userId")));
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new QueryException(e.getMessage());
         } finally {
             if (rs != null)
                 closeResultSet(rs);
@@ -546,7 +553,6 @@ public class SQLHandler implements Query {
         ArrayList<Movie> movies = new ArrayList<>();
         ResultSet rs = null;
         String query = String.format("SELECT * FROM view_GetMovieDirectorMediaUserId WHERE title = '%s';", title);
-        System.out.print(query);
         try {
             Statement statement = connection.createStatement();
             rs = statement.executeQuery(query);
@@ -707,7 +713,8 @@ public class SQLHandler implements Query {
     public ArrayList<Movie> getMoviesByDirector(String directorName) throws QueryException {
         ArrayList<Movie> movies = new ArrayList<>();
         ResultSet rs = null;
-        String query = String.format("SELECT * FROM view_GetMovieDirectorMediaUserId ,Director WHERE Director.directorId= view_GetMovieDirectorMediaUserId.directorId &&  directorName = '%s'", directorName);
+        String query = String.format("SELECT * FROM view_GetMovieDirectorMediaUserId, Director WHERE" +
+                " Director.directorId = view_GetMovieDirectorMediaUserId.directorId && directorName = '%s'", directorName);
         try {
             Statement statement = connection.createStatement();
             rs = statement.executeQuery(query);
@@ -883,7 +890,7 @@ public class SQLHandler implements Query {
                 );
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new QueryException(e.getMessage());
         } finally {
             if (rs != null)
                 closeResultSet(rs);
@@ -911,7 +918,7 @@ public class SQLHandler implements Query {
                         rs.getString("genre"),
                         getSongArtists(rs.getInt("songId"))));
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new QueryException(e.getMessage());
         } finally {
             if (rs != null)
                 closeResultSet(rs);

@@ -9,9 +9,10 @@ public class Movie extends Media {
     private int movieId;
 
     /**
-     * Using media as a superclass to get access to mediaId and title
-     * @param mediaId defines the movie
-     * @param title title of the movie
+     * Represent a movie entity of the database
+     *
+     * @param mediaId    defines the movie
+     * @param title      title of the movie
      * @param directorId director of the movie
      */
     public Movie(int movieId, int mediaId, String title, int directorId, int userId, String genre) {
@@ -27,6 +28,11 @@ public class Movie extends Media {
         return directorId;
     }
 
+    /**
+     * Returns the id of the movie
+     *
+     * @return id of the movie
+     */
     public int getMovieId() {
         return movieId;
     }
