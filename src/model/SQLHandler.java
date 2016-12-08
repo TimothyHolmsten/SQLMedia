@@ -13,7 +13,7 @@ public class SQLHandler implements Query {
 
     public SQLHandler() throws SQLException, ClassNotFoundException {
         Class.forName("com.mysql.jdbc.Driver");
-        connection = DriverManager.getConnection(SERVER, "NormalUser", "");
+        connection = DriverManager.getConnection(SERVER, "root", "1234");
     }
 
     public void closeConnection() throws QueryException {

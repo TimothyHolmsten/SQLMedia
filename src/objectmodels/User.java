@@ -61,7 +61,7 @@ public class User extends Person {
 
     @Override
     /**
-     * this metod is exetends from toString
+     * this metod is exetends from toStringg
      * @return alla Users data in a String
      */
     public String toString() {

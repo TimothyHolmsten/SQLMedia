@@ -7,6 +7,12 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import model.NoSQLHandler;
+import objectmodels.Director;
+import objectmodels.Movie;
+import objectmodels.Song;
+import objectmodels.User;
+
+import java.util.ArrayList;
 
 public class Main extends Application {
 
@@ -31,12 +37,33 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         //Application.launch(args);
+
+
         NoSQLHandler noSQLHandler = new NoSQLHandler();
         try {
             int temp = noSQLHandler.addDirector("George Lucas");
+            Director director = new Director("Lucas");
+
+            ArrayList<Director>directors=noSQLHandler.getDirectors();
+            System.out.println(directors.toString());
+
+            User user = new User("Douglas");
+
+            noSQLHandler.addMovie("Star War","Scifi",director,user);
+            ArrayList<Song> songs = new ArrayList<Song>();
+            songs.add(new Song("song 1","rock",new User("Douglas")));
+            songs.add(new Song("song 2","rock",new User("Stefan")));
+
+            noSQLHandler.addAlbum("High way to hell",songs,new User("Douglas"));
+
+            ArrayList<Movie>  movies = noSQLHandler.getMovies();
+
+            for (Movie m: movies) {
+                System.out.println(m.getDirector().getName());
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 }

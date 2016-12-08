@@ -8,7 +8,6 @@ public class Movie extends Media {
     private int directorId;
     private int movieId;
     private Director director;
-
     /**
      * Represent a movie entity of the database
      *
@@ -24,6 +23,8 @@ public class Movie extends Media {
 
     public Movie(String title, String genre, Director director, User user) {
         super(title, genre, user);
+        this.director=director;
+
     }
 
     /**
@@ -45,4 +46,6 @@ public class Movie extends Media {
     public Director getDirector() {
         return director;
     }
+
+
 }
