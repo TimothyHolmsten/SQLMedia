@@ -14,7 +14,7 @@ public class Main extends Application {
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("mediaLibrary.fxml"));
         //Parent root = FXMLLoader.load(getClass().getResource("mediaLibrary.fxml"));
-        Parent root = (Parent) loader.load();
+        Parent root = loader.load();
         primaryStage.setTitle("Media Library");
         primaryStage.setScene(new Scene(root));
         MediaLibraryController controller = loader.getController();

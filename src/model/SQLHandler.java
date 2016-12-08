@@ -766,7 +766,7 @@ public class SQLHandler implements Query {
         ArrayList<Album> albums = new ArrayList<>();
         ResultSet rs = null;
         try {
-            String query = String.format("SELECT * FROM view_GetAlbumMediaUser, SongArtist WHERE artistName='%s'", artistName);
+            String query = String.format("SELECT * FROM view_AlbumSongArtistUserIdMedia WHERE artistName='%s'", artistName);
             Statement statement = connection.createStatement();
             rs = statement.executeQuery(query);
             while (rs.next())

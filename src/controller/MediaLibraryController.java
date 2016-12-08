@@ -87,6 +87,10 @@ public class MediaLibraryController implements Initializable {
         }
     }
 
+    public void updateUi(String message) {
+        System.out.println(message);
+    }
+
     private void showErrorMessage(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR, message);
         alert.showAndWait();
@@ -104,12 +108,57 @@ public class MediaLibraryController implements Initializable {
             int search = Integer.parseInt(searchText);
 
             if (searchFor.equals("Movie")) {
+                new Thread() {
+                    public void run() {
+                        try {
+                            String msg = sql.getMovieById(search).getTitle();
+                            javafx.application.Platform.runLater(
+                                    new Runnable() {
+                                        public void run() {
+                                            updateUi(msg);
+                                        }
+                                    });
+                        } catch (QueryException e) {
+                            showErrorMessage(e.getMessage());
+                        }
+                    }
+                }.start();
                 obj = sql.getMovieById(search);
             }
             if (searchFor.equals("Album")) {
+                new Thread() {
+                    public void run() {
+                        try {
+                            String msg = sql.getAlbumById(search).getTitle();
+                            javafx.application.Platform.runLater(
+                                    new Runnable() {
+                                        public void run() {
+                                            updateUi(msg);
+                                        }
+                                    });
+                        } catch (QueryException e) {
+                            showErrorMessage(e.getMessage());
+                        }
+                    }
+                }.start();
                 obj = sql.getAlbumById(search);
             }
             if (searchFor.equals("Song")) {
+                new Thread() {
+                    public void run() {
+                        try {
+                            String msg = sql.getSongById(search).getTitle();
+                            javafx.application.Platform.runLater(
+                                    new Runnable() {
+                                        public void run() {
+                                            updateUi(msg);
+                                        }
+                                    });
+                        } catch (QueryException e) {
+                            showErrorMessage(e.getMessage());
+                        }
+                    }
+                }.start();
                 obj = sql.getSongById(search);
             }
             if (obj != null)
@@ -200,6 +249,7 @@ public class MediaLibraryController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         btnSearch.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
