@@ -8,6 +8,7 @@ public abstract class Media implements AddedContent {
     private String title;
     private int addedByUserId; // userId of who added this media
     private String genre;
+    private User addedByUser;
 
     /**
      * Represent a media entity of the database
@@ -22,6 +23,12 @@ public abstract class Media implements AddedContent {
         this.title = title;
         this.addedByUserId = addedByUserId;
         this.genre = genre;
+    }
+
+    public Media(String title, String genre, User user) {
+        this.title = title;
+        this.genre = genre;
+        this.addedByUser = user;
     }
 
     /**
@@ -65,5 +72,9 @@ public abstract class Media implements AddedContent {
     public String toString() {
         return String.format("ID: %d, Title: %s, Genre: %s, Added By: %d",
                 mediaId, getTitle(), getGenre(), getAddedByUserId());
+    }
+
+    public User getAddedByUser() {
+        return addedByUser;
     }
 }

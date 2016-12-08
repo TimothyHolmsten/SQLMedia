@@ -27,6 +27,10 @@ public class Song extends Media {
         artists = new ArrayList<>();
     }
 
+    public Song(String title, String genre, User user) {
+        super(title, genre, user);
+    }
+
     /**
      * Represent a song entity of the database
      *

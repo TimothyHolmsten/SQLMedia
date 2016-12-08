@@ -14,11 +14,10 @@ public class User extends Person {
     private ArrayList<Review> reviews;
 
     /**
-     *  this constructor use a String and a integers ,
-     *  @param  userId is the first parameter to construtor
-     *  @param userName  is the second parameter to construtor
+     * this constructor use a String and a integers ,
      *
-     *
+     * @param userId   is the first parameter to construtor
+     * @param userName is the second parameter to construtor
      */
     public User(int userId, String userName) {
         super(userName);
@@ -26,12 +25,17 @@ public class User extends Person {
         reviews = new ArrayList<>();
     }
 
+    public User(String userName) {
+        super(userName);
+    }
+
     /**
      * this a second construtor with three parameter , an arraylist of review and a interge
      * and a string
-     * @param reviews added all reviews that person has done
+     *
+     * @param reviews  added all reviews that person has done
      * @param userName added username
-     * @param userId added userid to user class
+     * @param userId   added userid to user class
      */
     public User(int userId, String userName, ArrayList<Review> reviews) {
         super(userName);
@@ -40,7 +44,6 @@ public class User extends Person {
     }
 
     /**
-     *
      * @returnthis method returns the userId
      */
     public int getUserId() {
@@ -49,6 +52,7 @@ public class User extends Person {
 
     /**
      * this
+     *
      * @return array list , this returns a list of all reviews user has done
      */
     public ArrayList<Review> getReviews() {

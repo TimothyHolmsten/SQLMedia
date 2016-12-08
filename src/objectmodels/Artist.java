@@ -20,6 +20,10 @@ public class Artist extends Person implements AddedContent {
         this.addedByUserId = addedByUserId;
     }
 
+    public Artist(String artistName) {
+        super(artistName);
+    }
+
     /**
      * Returns the artist's id
      *

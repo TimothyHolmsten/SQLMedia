@@ -41,6 +41,10 @@ public class Album extends Media {
         this.albumId = albumId;
     }
 
+    public Album(String title, String genre, User user) {
+        super(title, genre, user);
+    }
+
     /**
      * Returns the songs of the album
      *

@@ -7,6 +7,7 @@ public class Movie extends Media {
     // Movie(mediaId,, title, userId,directorId);
     private int directorId;
     private int movieId;
+    private Director director;
 
     /**
      * Represent a movie entity of the database
@@ -19,6 +20,10 @@ public class Movie extends Media {
         super(mediaId, title, userId, genre);
         this.movieId = movieId;
         this.directorId = directorId;
+    }
+
+    public Movie(String title, String genre, Director director, User user) {
+        super(title, genre, user);
     }
 
     /**
@@ -35,5 +40,9 @@ public class Movie extends Media {
      */
     public int getMovieId() {
         return movieId;
+    }
+
+    public Director getDirector() {
+        return director;
     }
 }

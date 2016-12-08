@@ -18,6 +18,10 @@ public class Director extends Person {
         this.directorId = directorId;
     }
 
+    public Director(String directorName) {
+        super(directorName);
+    }
+
     /**
      * Returns the director's id
      *

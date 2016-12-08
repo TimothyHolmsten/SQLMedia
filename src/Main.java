@@ -1,5 +1,3 @@
-import com.mongodb.MongoException;
-import com.mongodb.client.MongoDatabase;
 import controller.MediaLibraryController;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -9,7 +7,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import model.NoSQLHandler;
-import model.QueryException;
 
 public class Main extends Application {
 
@@ -32,11 +29,11 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    public static void main(String[] args)  {
+    public static void main(String[] args) {
         //Application.launch(args);
         NoSQLHandler noSQLHandler = new NoSQLHandler();
         try {
-            int temp = noSQLHandler.addDirector("Lucas Geogre");
+            int temp = noSQLHandler.addDirector("George Lucas");
         } catch (Exception e) {
             e.printStackTrace();
         }
