@@ -1,6 +1,12 @@
 package model;
 
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientException;
+import com.mongodb.MongoException;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import objectmodels.*;
+import org.bson.Document;
 
 import java.util.ArrayList;
 
@@ -8,14 +14,30 @@ import java.util.ArrayList;
  * Created by timothy on 2016-11-29.
  */
 public class NoSQLHandler implements Query {
+    private MongoDatabase database = null;
+    private  MongoCollection collection = null;
+    public NoSQLHandler(){
+        MongoClient mongoClient = new MongoClient("localhost", 27017);
+       database= mongoClient.getDatabase("lab2_database");
+
+
+    }
     @Override
     public int addDirector(String directorName) throws QueryException {
+        collection= database.getCollection("Director");
+        Document document= new Document("directorName",directorName);
+        try {
+            collection.insertOne(document);
+
+        }catch (MongoException e){
+            throw new QueryException(e.getMessage());
+        }
         return 0;
     }
 
     @Override
     public void addMovie(String title, String genre, Director director, User user) throws QueryException {
-
+        
     }
 
     @Override
