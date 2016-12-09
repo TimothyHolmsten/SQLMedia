@@ -78,7 +78,7 @@ public class NoSQLHandler implements Query {
         Document artistDoc = new Document("name", artist.getName())
                 .append("addBy", new Document("name", artist.getAddedByUser().getName()));
 
-        ArrayList artistList = new ArrayList();
+        ArrayList<Document> artistList = new ArrayList<>();
         artistList.add(artistDoc);
 
         Document document = new Document("title", title).append("genre", genre);
