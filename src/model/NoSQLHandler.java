@@ -98,7 +98,7 @@ public class NoSQLHandler implements Query {
 
         MongoCollection<Document> SongCollection = database.getCollection("Song");
 
-        ArrayList artistList = new ArrayList();
+        ArrayList<Document> artistList = new ArrayList<>();
         artistList.add(artist);
 
         Document document = new Document("title", title).append("genre", genre);
