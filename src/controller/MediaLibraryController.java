@@ -11,18 +11,17 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import model.NoSQLHandler;
 import model.QueryException;
-import model.SQLHandler;
 import objectmodels.*;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class MediaLibraryController implements Initializable {
 
-    private SQLHandler sql;
+    private NoSQLHandler sql;
 
     @FXML
     private ComboBox<String> comboBoxSearchFor, comboBoxSearchBy;
@@ -71,20 +70,15 @@ public class MediaLibraryController implements Initializable {
 
 
     public MediaLibraryController() throws ClassNotFoundException {
-        try {
-            sql = new SQLHandler();
-        } catch (SQLException e) {
-            showErrorMessage("Could not connect to database");
-            System.exit(e.getErrorCode());
-        }
+        sql = new NoSQLHandler();
     }
 
     public void closeConnection() {
-        try {
+        /*try {
             sql.closeConnection();
         } catch (QueryException e) {
             showErrorMessage(e.getMessage());
-        }
+        }*/
     }
 
     public void updateUi(String message) {

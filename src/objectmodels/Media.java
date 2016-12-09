@@ -70,8 +70,8 @@ public abstract class Media implements AddedContent {
 
     @Override
     public String toString() {
-        return String.format("ID: %d, Title: %s, Genre: %s, Added By: %d",
-                mediaId, getTitle(), getGenre(), getAddedByUserId());
+        return String.format("Title: %s, Genre: %s, Added By: %s",
+                getTitle(), getGenre(), addedByUser.getName());
     }
 
     public User getAddedByUser() {

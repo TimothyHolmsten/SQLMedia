@@ -6,6 +6,7 @@ package objectmodels;
 public class Artist extends Person implements AddedContent {
     private int artistId;
     private int addedByUserId;
+    private User user;
 
     /**
      * Represents an artist entity of the database
@@ -18,10 +19,12 @@ public class Artist extends Person implements AddedContent {
         super(artistName);
         this.artistId = artistId;
         this.addedByUserId = addedByUserId;
+        this.user = null;
     }
 
-    public Artist(String artistName) {
+    public Artist(String artistName, User user) {
         super(artistName);
+        this.user = user;
     }
 
     /**
@@ -47,5 +50,9 @@ public class Artist extends Person implements AddedContent {
     public String toString() {
         return String.format("ID: %d, Name: %s, Added By: %d",
                 artistId, getName(), addedByUserId);
+    }
+
+    public User getAddedByUser() {
+        return user;
     }
 }

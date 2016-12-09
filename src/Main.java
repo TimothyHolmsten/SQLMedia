@@ -36,11 +36,12 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        //Application.launch(args);
+        Application.launch(args);
 
 
         NoSQLHandler noSQLHandler = new NoSQLHandler();
         try {
+            /*
             int temp = noSQLHandler.addDirector("George Lucas");
             Director director = new Director("Lucas");
 
@@ -61,6 +62,7 @@ public class Main extends Application {
             for (Movie m: movies) {
                 System.out.println(m.getDirector().getName());
             }
+            */
 
         } catch (Exception e) {
             e.printStackTrace();

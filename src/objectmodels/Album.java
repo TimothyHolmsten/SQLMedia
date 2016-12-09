@@ -45,6 +45,11 @@ public class Album extends Media {
         super(title, genre, user);
     }
 
+    public Album(String title, String genre, User user, ArrayList<Song> songs) {
+        super(title, genre, user);
+        this.songs = songs;
+    }
+
     /**
      * Returns the songs of the album
      *

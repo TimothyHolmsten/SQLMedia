@@ -31,6 +31,11 @@ public class Song extends Media {
         super(title, genre, user);
     }
 
+    public Song(String title, String genre, User user, ArrayList<Artist> artists) {
+        super(title, genre, user);
+        this.artists = artists;
+    }
+
     /**
      * Represent a song entity of the database
      *
@@ -67,11 +72,13 @@ public class Song extends Media {
 
     @Override
     public String toString() {
-        if (artists.size() > 0)
+        /*if (artists.size() > 0)
             return String.format("ID: %d, Title: %s, Genre: %s, Added By: %d, Artists: %s",
                     songId, getTitle(), getGenre(), getAddedByUserId(), artists.toString());
         else
             return String.format("ID: %d, Title: %s, Genre: %s, Added By: %d",
                     songId, getTitle(), getGenre(), getAddedByUserId());
+                    */
+        return super.toString();
     }
 }
