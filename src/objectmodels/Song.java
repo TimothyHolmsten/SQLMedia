@@ -27,12 +27,12 @@ public class Song extends Media {
         artists = new ArrayList<>();
     }
 
-    public Song(String title, String genre, User user) {
-        super(title, genre, user);
+    public Song(String title, String genre, User user, String mediaId) {
+        super(title, genre, user, mediaId);
     }
 
-    public Song(String title, String genre, User user, ArrayList<Artist> artists) {
-        super(title, genre, user);
+    public Song(String title, String genre, User user, ArrayList<Artist> artists, String mediaId) {
+        super(title, genre, user, mediaId);
         this.artists = artists;
     }
 

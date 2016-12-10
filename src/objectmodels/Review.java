@@ -28,6 +28,11 @@ public class Review {
         this.userId = userId;
     }
 
+    public Review(String reviewText, int rating) {
+        this.reviewText = reviewText;
+        this.rating = rating;
+    }
+
     /**
      * Returns id of the user who made the review
      *

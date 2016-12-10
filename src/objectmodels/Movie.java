@@ -21,8 +21,8 @@ public class Movie extends Media {
         this.directorId = directorId;
     }
 
-    public Movie(String title, String genre, Director director, User user) {
-        super(title, genre, user);
+    public Movie(String title, String genre, Director director, User user, String mediaId) {
+        super(title, genre, user, mediaId);
         this.director=director;
 
     }

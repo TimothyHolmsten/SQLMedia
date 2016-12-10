@@ -11,8 +11,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import model.Handler;
 import model.NoSQLHandler;
 import model.QueryException;
+import model.SQLHandler;
 import objectmodels.*;
 
 import java.net.URL;
@@ -21,7 +23,7 @@ import java.util.ResourceBundle;
 
 public class MediaLibraryController implements Initializable {
 
-    private NoSQLHandler sql;
+    private Handler handler;
 
     @FXML
     private ComboBox<String> comboBoxSearchFor, comboBoxSearchBy;
@@ -70,12 +72,12 @@ public class MediaLibraryController implements Initializable {
 
 
     public MediaLibraryController() throws ClassNotFoundException {
-        sql = new NoSQLHandler();
+        handler = new NoSQLHandler();
     }
 
     public void closeConnection() {
         /*try {
-            sql.closeConnection();
+            handler.closeConnection();
         } catch (QueryException e) {
             showErrorMessage(e.getMessage());
         }*/
@@ -105,7 +107,7 @@ public class MediaLibraryController implements Initializable {
                 new Thread() {
                     public void run() {
                         try {
-                            String msg = sql.getMovieById(search).getTitle();
+                            String msg = handler.getMovieById(search).getTitle();
                             javafx.application.Platform.runLater(
                                     new Runnable() {
                                         public void run() {
@@ -117,13 +119,13 @@ public class MediaLibraryController implements Initializable {
                         }
                     }
                 }.start();
-                obj = sql.getMovieById(search);
+                obj = handler.getMovieById(search);
             }
             if (searchFor.equals("Album")) {
                 new Thread() {
                     public void run() {
                         try {
-                            String msg = sql.getAlbumById(search).getTitle();
+                            String msg = handler.getAlbumById(search).getTitle();
                             javafx.application.Platform.runLater(
                                     new Runnable() {
                                         public void run() {
@@ -135,13 +137,13 @@ public class MediaLibraryController implements Initializable {
                         }
                     }
                 }.start();
-                obj = sql.getAlbumById(search);
+                obj = handler.getAlbumById(search);
             }
             if (searchFor.equals("Song")) {
                 new Thread() {
                     public void run() {
                         try {
-                            String msg = sql.getSongById(search).getTitle();
+                            String msg = handler.getSongById(search).getTitle();
                             javafx.application.Platform.runLater(
                                     new Runnable() {
                                         public void run() {
@@ -153,7 +155,7 @@ public class MediaLibraryController implements Initializable {
                         }
                     }
                 }.start();
-                obj = sql.getSongById(search);
+                obj = handler.getSongById(search);
             }
             if (obj != null)
                 searchView.getItems().addAll(obj.toString());
@@ -163,13 +165,13 @@ public class MediaLibraryController implements Initializable {
             ArrayList<Media> medias = new ArrayList<>();
 
             if (searchFor.equals("Movie")) {
-                medias.addAll(sql.getMoviesByTitle(searchText));
+                medias.addAll(handler.getMoviesByTitle(searchText));
             }
             if (searchFor.equals("Album")) {
-                medias.addAll(sql.getAlbumsByTitle(searchText));
+                medias.addAll(handler.getAlbumsByTitle(searchText));
             }
             if (searchFor.equals("Song")) {
-                medias.addAll(sql.getSongsByTitle(searchText));
+                medias.addAll(handler.getSongsByTitle(searchText));
             }
             if (medias.size() > 0)
                 for (Media media : medias)
@@ -180,14 +182,14 @@ public class MediaLibraryController implements Initializable {
             ArrayList<Media> medias = new ArrayList<>();
 
             if (searchFor.equals("Movie")) {
-                medias.addAll(sql.getMoviesByGenre(searchText));
+                medias.addAll(handler.getMoviesByGenre(searchText));
             }
             if (searchFor.equals("Album")) {
-                medias.addAll(sql.getAlbumsByGenre(searchText));
+                medias.addAll(handler.getAlbumsByGenre(searchText));
 
             }
             if (searchFor.equals("Song")) {
-                medias.addAll(sql.getSongsByGenre(searchText));
+                medias.addAll(handler.getSongsByGenre(searchText));
 
             }
             if (medias.size() > 0)
@@ -200,10 +202,10 @@ public class MediaLibraryController implements Initializable {
             ArrayList<Media> medias = new ArrayList<>();
 
             if (searchFor.equals("Album")) {
-                medias.addAll(sql.getAlbumsByArtist(searchText));
+                medias.addAll(handler.getAlbumsByArtist(searchText));
             }
             if (searchFor.equals("Song")) {
-                medias.addAll(sql.getSongsByArtist(searchText));
+                medias.addAll(handler.getSongsByArtist(searchText));
 
             }
             if (medias.size() > 0)
@@ -216,7 +218,7 @@ public class MediaLibraryController implements Initializable {
             ArrayList<Media> medias = new ArrayList<>();
 
             if (searchFor.equals("Movie")) {
-                medias.addAll(sql.getMoviesByDirector(searchText));
+                medias.addAll(handler.getMoviesByDirector(searchText));
             }
             if (medias.size() > 0)
                 for (Media media : medias)
@@ -227,10 +229,10 @@ public class MediaLibraryController implements Initializable {
             ArrayList<Media> medias = new ArrayList<>();
 
             if (searchFor.equals("Movie")) {
-                medias.addAll(sql.getMoviesByRating(Integer.parseInt(searchText)));
+                medias.addAll(handler.getMoviesByRating(Integer.parseInt(searchText)));
             }
             if (searchFor.equals("Song")) {
-                medias.addAll(sql.getSongsByRating(Integer.parseInt(searchText)));
+                medias.addAll(handler.getSongsByRating(Integer.parseInt(searchText)));
             }
             if (medias.size() > 0)
                 for (Media media : medias)
@@ -276,7 +278,7 @@ public class MediaLibraryController implements Initializable {
                     @Override
                     public void handle(ActionEvent event) {
                         try {
-                            client = sql.getUserByName(txtUserName.getText());
+                            client = handler.getUserByName(txtUserName.getText());
                             if (client == null)
                                 showErrorMessage("User not found");
                             else {
@@ -302,7 +304,7 @@ public class MediaLibraryController implements Initializable {
             public void handle(ActionEvent event) {
                 try {
                     songView.getItems().clear();
-                    songView.getItems().addAll(sql.getSongs());
+                    songView.getItems().addAll(handler.getSongs());
                 } catch (QueryException e) {
                     showErrorMessage(e.getMessage());
                 }
@@ -315,7 +317,7 @@ public class MediaLibraryController implements Initializable {
                 ArrayList<Song> songs = new ArrayList<>();
                 songs.addAll(songView.getSelectionModel().getSelectedItems());
                 try {
-                    sql.addAlbum(textAlbumTitle.getText(), songs, client);
+                    handler.addAlbum(textAlbumTitle.getText(), songs, client);
                 } catch (QueryException e) {
                     showErrorMessage(e.getMessage());
                 }
@@ -327,7 +329,7 @@ public class MediaLibraryController implements Initializable {
             public void handle(ActionEvent event) {
                 directorView.getItems().clear();
                 try {
-                    directorView.getItems().addAll(sql.getDirectors());
+                    directorView.getItems().addAll(handler.getDirectors());
                 } catch (QueryException e) {
                     showErrorMessage(e.getMessage());
                 }
@@ -340,7 +342,7 @@ public class MediaLibraryController implements Initializable {
                 Director director;
                 try {
                     if (textMovieDirector.getText() != null)
-                        director = new Director(sql.addDirector(textMovieDirector.getText()), textMovieDirector.getText());
+                        director = new Director(handler.addDirector(textMovieDirector.getText()), textMovieDirector.getText());
                     else if (directorView.getSelectionModel().getSelectedItems() != null)
                         director = directorView.getSelectionModel().getSelectedItem();
                     else {
@@ -348,7 +350,7 @@ public class MediaLibraryController implements Initializable {
                         return;
                     }
 
-                    sql.addMovie(textMovieTitle.getText(), textMovieGenre.getText(), director, client);
+                    handler.addMovie(textMovieTitle.getText(), textMovieGenre.getText(), director, client);
                 } catch (QueryException e) {
                     showErrorMessage(e.getMessage());
                 }
@@ -360,7 +362,7 @@ public class MediaLibraryController implements Initializable {
             public void handle(ActionEvent event) {
                 artistView.getItems().clear();
                 try {
-                    artistView.getItems().addAll(sql.getArtists());
+                    artistView.getItems().addAll(handler.getArtists());
                 } catch (QueryException e) {
                     showErrorMessage(e.getMessage());
                 }
@@ -372,10 +374,10 @@ public class MediaLibraryController implements Initializable {
             public void handle(ActionEvent event) {
                 try {
                     if (textSongArtist.getText() != null)
-                        sql.addSong(textSongTitle.getText(), textSongGenre.getText(), client, textSongArtist.getText());
+                        handler.addSong(textSongTitle.getText(), textSongGenre.getText(), client, textSongArtist.getText());
                     else if (artistView.getSelectionModel().getSelectedItems() != null) {
                         Artist artist = artistView.getSelectionModel().getSelectedItem();
-                        sql.addSong(textSongTitle.getText(), textSongGenre.getText(), client, artist);
+                        handler.addSong(textSongTitle.getText(), textSongGenre.getText(), client, artist);
                     } else {
                         showErrorMessage("Could not add song with artist");
                     }
@@ -391,7 +393,7 @@ public class MediaLibraryController implements Initializable {
             public void handle(ActionEvent event) {
                 mediaView.getItems().clear();
                 try {
-                    mediaView.getItems().addAll(sql.getAllMedia());
+                    mediaView.getItems().addAll(handler.getAllMedia());
                 } catch (QueryException e) {
                     showErrorMessage(e.getMessage());
                 }
@@ -405,7 +407,10 @@ public class MediaLibraryController implements Initializable {
                     showErrorMessage("Must have a rating");
                 } else {
                     try {
-                        sql.addReview(textReview.getText(), comboBoxReviewRating.getValue(), client, mediaView.getSelectionModel().getSelectedItem().getMediaId());
+                        if (handler instanceof SQLHandler)
+                            handler.addReview(textReview.getText(), comboBoxReviewRating.getValue(), client, mediaView.getSelectionModel().getSelectedItem().getMediaId());
+                        else if (handler instanceof NoSQLHandler)
+                            handler.addReview(textReview.getText(), comboBoxReviewRating.getValue(), client, mediaView.getSelectionModel().getSelectedItem());
                     } catch (QueryException e) {
                         showErrorMessage(e.getMessage());
                     }
@@ -419,7 +424,7 @@ public class MediaLibraryController implements Initializable {
                 artist2View.getItems().clear();
                 try {
                     artist2View.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-                    artist2View.getItems().addAll(sql.getArtists());
+                    artist2View.getItems().addAll(handler.getArtists());
                 } catch (QueryException e) {
                     showErrorMessage(e.getMessage());
                 }
@@ -432,7 +437,7 @@ public class MediaLibraryController implements Initializable {
                 song2View.getItems().clear();
                 try {
                     song2View.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-                    song2View.getItems().addAll(sql.getSongs());
+                    song2View.getItems().addAll(handler.getSongs());
                 } catch (QueryException e) {
                     showErrorMessage(e.getMessage());
                 }
@@ -448,7 +453,7 @@ public class MediaLibraryController implements Initializable {
                     for (Artist artist : artist2View.getSelectionModel().getSelectedItems())
                         for (Song song : song2View.getSelectionModel().getSelectedItems())
                             try {
-                                sql.addArtistToSong(artist, song, client);
+                                handler.addArtistToSong(artist, song, client);
                             } catch (QueryException e) {
                                 showErrorMessage(e.getMessage());
                             }

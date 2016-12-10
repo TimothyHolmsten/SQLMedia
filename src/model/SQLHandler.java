@@ -8,7 +8,7 @@ import java.util.ArrayList;
 /**
  * Created by timothy on 2016-11-28.
  */
-public class SQLHandler implements Query {
+public class SQLHandler extends Handler {
     private Connection connection;
 
     public SQLHandler() throws SQLException, ClassNotFoundException {
@@ -289,6 +289,11 @@ public class SQLHandler implements Query {
         } finally {
             turnAutoCommitOn();
         }
+    }
+
+    @Override
+    public void addReview(String reviewText, int rating, User user, Media media) throws QueryException {
+
     }
 
     @Override

@@ -29,6 +29,8 @@ public interface Query {
 
     void addReview(String reviewText, int rating, User user, int mediaId) throws QueryException;
 
+    void addReview(String reviewText, int rating, User user, Media media) throws QueryException;
+
     Movie getMovieById(int id) throws QueryException;
 
     Director getDirectorById(int id) throws QueryException;

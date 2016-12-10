@@ -41,12 +41,13 @@ public class Album extends Media {
         this.albumId = albumId;
     }
 
-    public Album(String title, String genre, User user) {
-        super(title, genre, user);
+    public Album(String title, String genre, User user, String mediaId) {
+        super(title, genre, user, mediaId);
+        songs = new ArrayList<>();
     }
 
-    public Album(String title, String genre, User user, ArrayList<Song> songs) {
-        super(title, genre, user);
+    public Album(String title, String genre, User user, ArrayList<Song> songs, String mediaId) {
+        super(title, genre, user, mediaId);
         this.songs = songs;
     }
 

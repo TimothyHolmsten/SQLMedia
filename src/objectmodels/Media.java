@@ -5,6 +5,7 @@ package objectmodels;
  */
 public abstract class Media implements AddedContent {
     private int mediaId;
+    private String mediaIdString;
     private String title;
     private int addedByUserId; // userId of who added this media
     private String genre;
@@ -25,10 +26,11 @@ public abstract class Media implements AddedContent {
         this.genre = genre;
     }
 
-    public Media(String title, String genre, User user) {
+    public Media(String title, String genre, User user, String mediaId) {
         this.title = title;
         this.genre = genre;
         this.addedByUser = user;
+        this.mediaIdString = mediaId;
     }
 
     /**
@@ -76,5 +78,9 @@ public abstract class Media implements AddedContent {
 
     public User getAddedByUser() {
         return addedByUser;
+    }
+
+    public String getMediaIdString() {
+        return mediaIdString;
     }
 }

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 /**
  * Created by timothy on 2016-11-29.
  */
-public class NoSQLHandler implements Query {
+public class NoSQLHandler extends Handler {
 
     private MongoDatabase database;
     //private  Document document = null;
@@ -39,7 +39,7 @@ public class NoSQLHandler implements Query {
 
         MongoCollection<Document> collection = database.getCollection("Movie");
 
-        Document document = new Document("title", title).append("genre", genre);
+        Document document = new Document("title", title).append("genre", genre).append("rating", 0);
         document.append("director", new Document("name", director.getName()));
         document.append("addBy", new Document("name", user.getName()));
         collection.insertOne(document);
@@ -50,10 +50,8 @@ public class NoSQLHandler implements Query {
         MongoCollection<Document> collection = database.getCollection("Album");
         ArrayList<Document> songlist = new ArrayList<>();
 
-
         Document document = new Document("title", title).append("genre", songs.get(0).getGenre());
         document.append("addBy", new Document("name", user.getName()));
-
 
         for (Song song : songs) {
             ArrayList<Document> songArtists = new ArrayList<>();
@@ -63,8 +61,10 @@ public class NoSQLHandler implements Query {
 
             songlist.add(new Document("title", song.getTitle())
                     .append("genre", song.getGenre())
+                    .append("rating", 0)
                     .append("artists", songArtists)
-                    .append("addBy", user.getName()));
+                    .append("addBy", user.getName())
+                    .append("_id", song.getMediaIdString()));
 
         }
         document.append("songs", songlist);
@@ -81,7 +81,7 @@ public class NoSQLHandler implements Query {
         ArrayList<Document> artistList = new ArrayList<>();
         artistList.add(artistDoc);
 
-        Document document = new Document("title", title).append("genre", genre);
+        Document document = new Document("title", title).append("genre", genre).append("rating", 0);
         document.append("addBy", new Document("name", user.getName()))
                 .append("artists", artistList);
 
@@ -101,7 +101,7 @@ public class NoSQLHandler implements Query {
         ArrayList<Document> artistList = new ArrayList<>();
         artistList.add(artist);
 
-        Document document = new Document("title", title).append("genre", genre);
+        Document document = new Document("title", title).append("genre", genre).append("rating", 0);
         document.append("artists", artistList);
         document.append("addBy", new Document("name", user.getName()));
 
@@ -132,7 +132,52 @@ public class NoSQLHandler implements Query {
 
     @Override
     public void addReview(String reviewText, int rating, User user, int mediaId) throws QueryException {
+    }
 
+    @Override
+    public void addReview(String reviewText, int rating, User user, Media media) throws QueryException {
+        MongoCollection<Document> collection = database.getCollection("Review");
+        Document review = new Document("text", reviewText)
+                .append("rating", rating)
+                .append("addBy", new Document("name", user.getName()))
+                .append("media", new Document("title", media.getTitle()).append("type", media.getClass().getSimpleName()).append("id", media.getMediaIdString()));
+        collection.insertOne(review);
+
+        double avgRating = 0;
+        int count = 0;
+        for (Review r : getReviewsByMedia(media)) {
+            avgRating += r.getRating();
+            count++;
+        }
+        avgRating = avgRating / count;
+
+        if (media instanceof Album)
+            collection = database.getCollection("Album");
+        else if (media instanceof Song)
+            collection = database.getCollection("Song");
+        else if (media instanceof Movie)
+            collection = database.getCollection("Movie");
+        else
+            throw new QueryException("Could not find media type");
+
+        Document doc = collection.find(Filters.eq("_id", media.getMediaIdString())).first();
+        Document doc2 = collection.find(Filters.eq("_id", media.getMediaIdString())).first();
+        doc2.put("rating", avgRating);
+        collection.updateOne(doc, doc2);
+
+
+    }
+
+    private ArrayList<Review> getReviewsByMedia(Media media) {
+        ArrayList<Review> reviews = new ArrayList<>();
+        MongoCollection<Document> collection = database.getCollection("Review");
+        MongoCursor<Document> cursor = collection.find(Filters.eq("media.id", media.getMediaIdString())).iterator();
+
+        while (cursor.hasNext()) {
+            Document obj = cursor.next();
+            reviews.add(new Review(obj.getString("text"), obj.getInteger("rating")));
+        }
+        return reviews;
     }
 
     @Override
@@ -191,7 +236,11 @@ public class NoSQLHandler implements Query {
 
     @Override
     public ArrayList<Media> getAllMedia() throws QueryException {
-        return null;
+        ArrayList<Media> medias = new ArrayList<>();
+        medias.addAll(getAlbums());
+        medias.addAll(getSongs());
+        medias.addAll(getMovies());
+        return medias;
     }
 
     @Override
@@ -215,7 +264,9 @@ public class NoSQLHandler implements Query {
 
     @Override
     public ArrayList<Album> getAlbums() throws QueryException {
-        return null;
+        MongoCollection<Document> collection = database.getCollection("Album");
+        MongoCursor<Document> cursor = collection.find().iterator();
+        return getAlbumsCursor(cursor);
     }
 
     private ArrayList<Movie> getMoviesCursor(MongoCursor<Document> cursor) {
@@ -230,7 +281,7 @@ public class NoSQLHandler implements Query {
             subObj = (Document) obj.get("user");
             User user = new User(subObj.getString("userName"));
 
-            Movie movie = new Movie(obj.getString("title"), obj.getString("genre"), director, user);
+            Movie movie = new Movie(obj.getString("title"), obj.getString("genre"), director, user, obj.getObjectId("_id").toString());
             movies.add(movie);
         }
         cursor.close();
@@ -258,11 +309,12 @@ public class NoSQLHandler implements Query {
                         doc.getString("title"),
                         doc.getString("genre"),
                         user,
-                        artists
+                        artists,
+                        doc.getString("_id")
                 ));
             }
 
-            Album album = new Album(obj.getString("title"), obj.getString("genre"), user, songs);
+            Album album = new Album(obj.getString("title"), obj.getString("genre"), user, songs, obj.getObjectId("_id").toString());
             albums.add(album);
         }
         cursor.close();
@@ -284,7 +336,7 @@ public class NoSQLHandler implements Query {
             for (Document doc : artists)
                 songArtists.add(new Artist(doc.getString("name"), new User(((Document) doc.get("addBy")).getString("name"))));
 
-            Song song = new Song(obj.getString("title"), obj.getString("genre"), user, songArtists);
+            Song song = new Song(obj.getString("title"), obj.getString("genre"), user, songArtists, obj.getObjectId("_id").toString());
             songs.add(song);
         }
         cursor.close();
