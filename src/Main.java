@@ -1,3 +1,7 @@
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 import controller.MediaLibraryController;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -11,6 +15,8 @@ import objectmodels.Director;
 import objectmodels.Movie;
 import objectmodels.Song;
 import objectmodels.User;
+import org.bson.Document;
+import static com.mongodb.client.model.Filters.eq;
 
 import java.util.ArrayList;
 
@@ -38,8 +44,6 @@ public class Main extends Application {
     public static void main(String[] args) {
         Application.launch(args);
 
-
-        NoSQLHandler noSQLHandler = new NoSQLHandler();
         try {
             /*
             int temp = noSQLHandler.addDirector("George Lucas");
