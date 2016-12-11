@@ -1,7 +1,3 @@
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
 import controller.MediaLibraryController;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -10,15 +6,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import model.NoSQLHandler;
-import objectmodels.Director;
-import objectmodels.Movie;
-import objectmodels.Song;
-import objectmodels.User;
-import org.bson.Document;
-import static com.mongodb.client.model.Filters.eq;
-
-import java.util.ArrayList;
 
 public class Main extends Application {
 
