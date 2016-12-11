@@ -7,6 +7,7 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import objectmodels.*;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 
@@ -50,7 +51,7 @@ public class NoSQLHandler extends Handler {
         MongoCollection<Document> collection = database.getCollection("Album");
         ArrayList<Document> songlist = new ArrayList<>();
 
-        Document document = new Document("title", title).append("genre", songs.get(0).getGenre());
+        Document document = new Document("title", title).append("genre", songs.get(0).getGenre()).append("rating", 0);
         document.append("addBy", new Document("name", user.getName()));
 
         for (Song song : songs) {
@@ -110,9 +111,13 @@ public class NoSQLHandler extends Handler {
 
     @Override
     public void addArtistToSong(Artist artist, Song song, User user) throws QueryException {
+
         MongoCollection<Document> collection = database.getCollection("Song");
+        Document songDoc = collection.find(Filters.eq("_id", new ObjectId(song.getMediaIdString()))).first();
+        Document songDoc2 = songDoc;
+        songDoc.append("artists", new Document("name", artist.getName()).append("addBy", new Document("name", user.getName())));
 
-
+        collection.replaceOne(songDoc2, songDoc);
     }
 
     @Override
@@ -137,6 +142,14 @@ public class NoSQLHandler extends Handler {
     @Override
     public void addReview(String reviewText, int rating, User user, Media media) throws QueryException {
         MongoCollection<Document> collection = database.getCollection("Review");
+        Document alreadyReviewed = collection.find(Filters.and(
+                Filters.eq("addBy.name", user.getName()),
+                Filters.eq("media.id", media.getMediaIdString())
+        )).first();
+
+        if (alreadyReviewed != null)
+            throw new QueryException("Already reviewed this media");
+
         Document review = new Document("text", reviewText)
                 .append("rating", rating)
                 .append("addBy", new Document("name", user.getName()))
@@ -160,10 +173,10 @@ public class NoSQLHandler extends Handler {
         else
             throw new QueryException("Could not find media type");
 
-        Document doc = collection.find(Filters.eq("_id", media.getMediaIdString())).first();
-        Document doc2 = collection.find(Filters.eq("_id", media.getMediaIdString())).first();
+        Document doc = collection.find(Filters.eq("_id", new ObjectId(media.getMediaIdString()))).first();
+        Document doc2 = collection.find(Filters.eq("_id", new ObjectId(media.getMediaIdString()))).first();
         doc2.put("rating", avgRating);
-        collection.updateOne(doc, doc2);
+        collection.replaceOne(doc, doc2);
 
 
     }
@@ -231,7 +244,9 @@ public class NoSQLHandler extends Handler {
 
     @Override
     public ArrayList<Artist> getArtists() throws QueryException {
-        return null;
+        MongoCollection<Document> collection = database.getCollection("Artist");
+        MongoCursor<Document> cursor = collection.find().iterator();
+        return getArtistsCursor(cursor);
     }
 
     @Override
