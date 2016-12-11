@@ -362,7 +362,7 @@ public class NoSQLHandler extends Handler {
             ArrayList<Artist> songArtists = new ArrayList<>();
 
             for (Document doc : artists)
-                songArtists.add(new Artist(doc.getString("name"), new User(doc.getString("addBy"))));
+                songArtists.add(new Artist(doc.getString("name"), new User(((Document) doc.get("addBy")).getString("name"))));
 
             Song song = new Song(obj.getString("title"), obj.getString("genre"), user, songArtists, obj.getObjectId("_id").toString());
             songs.add(song);
@@ -378,7 +378,7 @@ public class NoSQLHandler extends Handler {
             Document obj = cursor.next();
 
 
-            Artist artist = new Artist(obj.getString("name"), new User(obj.getString("addBy")));
+            Artist artist = new Artist(obj.getString("name"), new User(((Document) obj.get("addBy")).getString("name")));
             artists.add(artist);
         }
         cursor.close();
