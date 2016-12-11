@@ -7,8 +7,11 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import objectmodels.*;
 import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 import org.bson.types.ObjectId;
 
+import javax.print.Doc;
 import java.util.ArrayList;
 
 /**
@@ -52,13 +55,13 @@ public class NoSQLHandler extends Handler {
         ArrayList<Document> songlist = new ArrayList<>();
 
         Document document = new Document("title", title).append("genre", songs.get(0).getGenre()).append("rating", 0);
-        document.append("addBy", new Document("name", user.getName()));
+        document.append("addBy", user.getName());
 
         for (Song song : songs) {
             ArrayList<Document> songArtists = new ArrayList<>();
             for (Artist artist : song.getArtists())
                 songArtists.add(new Document("name", artist.getName())
-                        .append("addBy", new Document("name", artist.getAddedByUser().getName())));
+                        .append("addBy", artist.getAddedByUser().getName()));
 
             songlist.add(new Document("title", song.getTitle())
                     .append("genre", song.getGenre())
@@ -74,25 +77,28 @@ public class NoSQLHandler extends Handler {
 
     @Override
     public void addSong(String title, String genre, User user, Artist artist) throws QueryException {
-        MongoCollection<Document> collection = database.getCollection("Song");
 
-        Document artistDoc = new Document("name", artist.getName())
-                .append("addBy", new Document("name", artist.getAddedByUser().getName()));
+        Document artistDoc = new Document("name", artist.getName()).append("addBy",  artist.getAddedByUser().getName());
+
+
+        MongoCollection<Document> SongCollection = database.getCollection("Song");
 
         ArrayList<Document> artistList = new ArrayList<>();
         artistList.add(artistDoc);
 
         Document document = new Document("title", title).append("genre", genre).append("rating", 0);
-        document.append("addBy", new Document("name", user.getName()))
-                .append("artists", artistList);
+        document.append("artists", artistList);
+        document.append("addBy", new Document("name", user.getName()));
 
-        collection.insertOne(document);
+        SongCollection.insertOne(document);
     }
 
     @Override
     public void addSong(String title, String genre, User user, String artistName) throws QueryException {
 
-        Document artist = new Document("name", artistName).append("addBy", new Document("name", user.getName()));
+        Document artist = new Document("name", artistName).append("addBy",  user.getName());
+
+
 
         MongoCollection<Document> artistCollection = database.getCollection("Artist");
         artistCollection.insertOne(artist);
@@ -109,16 +115,6 @@ public class NoSQLHandler extends Handler {
         SongCollection.insertOne(document);
     }
 
-    @Override
-    public void addArtistToSong(Artist artist, Song song, User user) throws QueryException {
-
-        MongoCollection<Document> collection = database.getCollection("Song");
-        Document songDoc = collection.find(Filters.eq("_id", new ObjectId(song.getMediaIdString()))).first();
-        Document songDoc2 = songDoc;
-        songDoc.append("artists", new Document("name", artist.getName()).append("addBy", new Document("name", user.getName())));
-
-        collection.replaceOne(songDoc2, songDoc);
-    }
 
     @Override
     public int addMedia(String title, String genre, User user) throws QueryException {
@@ -164,6 +160,7 @@ public class NoSQLHandler extends Handler {
         }
         avgRating = avgRating / count;
 
+
         if (media instanceof Album)
             collection = database.getCollection("Album");
         else if (media instanceof Song)
@@ -177,6 +174,11 @@ public class NoSQLHandler extends Handler {
         Document doc2 = collection.find(Filters.eq("_id", new ObjectId(media.getMediaIdString()))).first();
         doc2.put("rating", avgRating);
         collection.replaceOne(doc, doc2);
+        Document find = collection.find(Filters.eq("_id", new ObjectId(media.getMediaIdString()))).first();
+
+        Document doc1 = new Document("rating",(int)avgRating);
+        Document update= new Document("$set",doc1);
+        collection.updateOne(find, update);
 
 
     }
@@ -293,8 +295,8 @@ public class NoSQLHandler extends Handler {
             Document subObj = (Document) obj.get("director");
             Director director = new Director(subObj.getString("name"));
 
-            subObj = (Document) obj.get("user");
-            User user = new User(subObj.getString("userName"));
+            subObj = (Document) obj.get("addBy");
+            User user = new User(subObj.getString("name"));
 
             Movie movie = new Movie(obj.getString("title"), obj.getString("genre"), director, user, obj.getObjectId("_id").toString());
             movies.add(movie);
@@ -310,8 +312,8 @@ public class NoSQLHandler extends Handler {
             Document obj = cursor.next();
 
 
-            Document subObj = (Document) obj.get("addBy");
-            User user = new User(subObj.getString("name"));
+            //Document subObj = (Document) obj.get("addBy");
+            User user = new User(obj.getString("addBy"));
 
             ArrayList<Document> songsDoc = (ArrayList<Document>) obj.get("songs");
             ArrayList<Song> songs = new ArrayList<>();
@@ -319,7 +321,7 @@ public class NoSQLHandler extends Handler {
             for (Document doc : songsDoc) {
                 ArrayList<Artist> artists = new ArrayList<>();
                 for (Document artist : ((ArrayList<Document>) doc.get("artists")))
-                    artists.add(new Artist(artist.getString("name"), new User(artist.getString("addBy.name"))));
+                    artists.add(new Artist(artist.getString("name"), new User(artist.getString("addBy"))));
                 songs.add(new Song(
                         doc.getString("title"),
                         doc.getString("genre"),
@@ -336,6 +338,17 @@ public class NoSQLHandler extends Handler {
         return albums;
     }
 
+    @Override
+    public void addArtistToSong(Artist artist, Song song, User user) throws QueryException {
+        MongoCollection collection = database.getCollection("Song");
+
+        Document newArtist = new Document("artists",new Document("name",artist.getName()).append("addBy",user.getName()));
+        Document updateQuery =new Document("$push",newArtist);
+
+        collection.updateOne(Filters.eq("title",song.getTitle()),updateQuery);
+
+
+    }
     private ArrayList<Song> getSongsCursor(MongoCursor<Document> cursor) {
         ArrayList<Song> songs = new ArrayList<>();
 
@@ -349,7 +362,7 @@ public class NoSQLHandler extends Handler {
             ArrayList<Artist> songArtists = new ArrayList<>();
 
             for (Document doc : artists)
-                songArtists.add(new Artist(doc.getString("name"), new User(((Document) doc.get("addBy")).getString("name"))));
+                songArtists.add(new Artist(doc.getString("name"), new User(doc.getString("addBy"))));
 
             Song song = new Song(obj.getString("title"), obj.getString("genre"), user, songArtists, obj.getObjectId("_id").toString());
             songs.add(song);
@@ -364,7 +377,8 @@ public class NoSQLHandler extends Handler {
         while (cursor.hasNext()) {
             Document obj = cursor.next();
 
-            Artist artist = new Artist(obj.getString("name"), new User(obj.getString("addBy.name")));
+
+            Artist artist = new Artist(obj.getString("name"), new User(obj.getString("addBy")));
             artists.add(artist);
         }
         cursor.close();

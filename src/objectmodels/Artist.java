@@ -48,8 +48,8 @@ public class Artist extends Person implements AddedContent {
 
     @Override
     public String toString() {
-        return String.format("ID: %d, Name: %s, Added By: %d",
-                artistId, getName(), addedByUserId);
+        return String.format("Name: %s, Added By: %s",
+                 getName(),user.getName());
     }
 
     public User getAddedByUser() {
