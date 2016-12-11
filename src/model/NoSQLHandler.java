@@ -7,11 +7,8 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import objectmodels.*;
 import org.bson.Document;
-import org.bson.conversions.Bson;
-import org.bson.types.ObjectId;
 import org.bson.types.ObjectId;
 
-import javax.print.Doc;
 import java.util.ArrayList;
 
 /**
@@ -78,7 +75,7 @@ public class NoSQLHandler extends Handler {
     @Override
     public void addSong(String title, String genre, User user, Artist artist) throws QueryException {
 
-        Document artistDoc = new Document("name", artist.getName()).append("addBy",  artist.getAddedByUser().getName());
+        Document artistDoc = new Document("name", artist.getName()).append("addBy", artist.getAddedByUser().getName());
 
 
         MongoCollection<Document> SongCollection = database.getCollection("Song");
@@ -96,8 +93,7 @@ public class NoSQLHandler extends Handler {
     @Override
     public void addSong(String title, String genre, User user, String artistName) throws QueryException {
 
-        Document artist = new Document("name", artistName).append("addBy",  user.getName());
-
+        Document artist = new Document("name", artistName).append("addBy", user.getName());
 
 
         MongoCollection<Document> artistCollection = database.getCollection("Artist");
@@ -176,8 +172,8 @@ public class NoSQLHandler extends Handler {
         collection.replaceOne(doc, doc2);
         Document find = collection.find(Filters.eq("_id", new ObjectId(media.getMediaIdString()))).first();
 
-        Document doc1 = new Document("rating",(int)avgRating);
-        Document update= new Document("$set",doc1);
+        Document doc1 = new Document("rating", (int) avgRating);
+        Document update = new Document("$set", doc1);
         collection.updateOne(find, update);
 
 
@@ -342,13 +338,14 @@ public class NoSQLHandler extends Handler {
     public void addArtistToSong(Artist artist, Song song, User user) throws QueryException {
         MongoCollection collection = database.getCollection("Song");
 
-        Document newArtist = new Document("artists",new Document("name",artist.getName()).append("addBy",user.getName()));
-        Document updateQuery =new Document("$push",newArtist);
+        Document newArtist = new Document("artists", new Document("name", artist.getName()).append("addBy", user.getName()));
+        Document updateQuery = new Document("$push", newArtist);
 
-        collection.updateOne(Filters.eq("title",song.getTitle()),updateQuery);
+        collection.updateOne(Filters.eq("title", song.getTitle()), updateQuery);
 
 
     }
+
     private ArrayList<Song> getSongsCursor(MongoCursor<Document> cursor) {
         ArrayList<Song> songs = new ArrayList<>();
 
