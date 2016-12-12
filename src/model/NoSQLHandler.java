@@ -52,7 +52,7 @@ public class NoSQLHandler extends Handler {
         ArrayList<Document> songlist = new ArrayList<>();
 
         Document document = new Document("title", title).append("genre", songs.get(0).getGenre()).append("rating", 0);
-        document.append("addBy", user.getName());
+        document.append("addBy", new Document("name", user.getName()));
 
         for (Song song : songs) {
             ArrayList<Document> songArtists = new ArrayList<>();
