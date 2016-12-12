@@ -93,7 +93,7 @@ public class NoSQLHandler extends Handler {
     @Override
     public void addSong(String title, String genre, User user, String artistName) throws QueryException {
 
-        Document artist = new Document("name", artistName).append("addBy", user.getName());
+        Document artist = new Document("name", artistName).append("addBy", new Document("name", user.getName()));
 
 
         MongoCollection<Document> artistCollection = database.getCollection("Artist");
