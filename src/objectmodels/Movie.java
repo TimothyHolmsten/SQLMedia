@@ -48,5 +48,8 @@ public class Movie extends Media {
         return director;
     }
 
-
+    @Override
+    public String toString() {
+        return String.format("%s, Director: %s", super.toString(), getDirector().getName());
+    }
 }
