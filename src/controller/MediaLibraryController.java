@@ -85,7 +85,7 @@ public class MediaLibraryController implements Initializable {
     }
 
     private void updateUiMedia(ArrayList<Media> medias) {
-        if (medias.size() > 0)
+        if (medias.size() > 0 && !medias.contains(null))
             for (Media media : medias)
                 searchView.getItems().add(media.toString());
         else
@@ -104,296 +104,306 @@ public class MediaLibraryController implements Initializable {
             return;
         }
 
-        if (searchBy.equals("ID")) {
-            int search = Integer.parseInt(searchText);
+        if (searchText.length() < 1) {
+            showErrorMessage("Search field is empty");
+            return;
+        }
+        switch (searchBy) {
+            case "ID":
 
-            if (searchFor.equals("Movie")) {
-                new Thread() {
-                    public void run() {
-                        try {
-                            ArrayList<Media> medias = new ArrayList<Media>();
-                            medias.add(handler.getMovieById(search));
-                            Platform.runLater(
-                                    new Runnable() {
-                                        public void run() {
-                                            updateUiMedia(medias);
-                                        }
-                                    });
-                        } catch (QueryException e) {
-                            showErrorMessage(e.getMessage());
+                if (searchFor.equals("Movie")) {
+                    new Thread() {
+                        public void run() {
+                            try {
+                                ArrayList<Media> medias = new ArrayList<Media>();
+                                medias.add(handler.getMovieById(Integer.parseInt(searchText)));
+                                Platform.runLater(
+                                        new Runnable() {
+                                            public void run() {
+                                                updateUiMedia(medias);
+                                            }
+                                        });
+                            } catch (QueryException e) {
+                                showErrorMessage(e.getMessage());
+                            }
                         }
-                    }
-                }.start();
-            }
-            if (searchFor.equals("Album")) {
-                new Thread() {
-                    public void run() {
-                        try {
-                            ArrayList<Media> medias = new ArrayList<Media>();
-                            medias.add(handler.getAlbumById(search));
-                            javafx.application.Platform.runLater(
-                                    new Runnable() {
-                                        public void run() {
-                                            updateUiMedia(medias);
-                                        }
-                                    });
-                        } catch (QueryException e) {
-                            showErrorMessage(e.getMessage());
+                    }.start();
+                }
+                if (searchFor.equals("Album")) {
+                    new Thread() {
+                        public void run() {
+                            try {
+                                ArrayList<Media> medias = new ArrayList<Media>();
+                                medias.add(handler.getAlbumById(Integer.parseInt(searchText)));
+                                Platform.runLater(
+                                        new Runnable() {
+                                            public void run() {
+                                                updateUiMedia(medias);
+                                            }
+                                        });
+                            } catch (QueryException e) {
+                                showErrorMessage(e.getMessage());
+                            }
                         }
-                    }
-                }.start();
-            }
-            if (searchFor.equals("Song")) {
-                new Thread() {
-                    public void run() {
-                        try {
-                            ArrayList<Media> medias = new ArrayList<Media>();
-                            medias.add(handler.getSongById(search));
-                            javafx.application.Platform.runLater(
-                                    new Runnable() {
-                                        public void run() {
-                                            updateUiMedia(medias);
-                                        }
-                                    });
-                        } catch (QueryException e) {
-                            showErrorMessage(e.getMessage());
+                    }.start();
+                }
+                if (searchFor.equals("Song")) {
+                    new Thread() {
+                        public void run() {
+                            try {
+                                ArrayList<Media> medias = new ArrayList<Media>();
+                                medias.add(handler.getSongById(Integer.parseInt(searchText)));
+                                Platform.runLater(
+                                        new Runnable() {
+                                            public void run() {
+                                                updateUiMedia(medias);
+                                            }
+                                        });
+                            } catch (QueryException e) {
+                                showErrorMessage(e.getMessage());
+                            }
                         }
-                    }
-                }.start();
-            }
-        } else if (searchBy.equals("Title")) {
+                    }.start();
+                }
+                break;
+            case "Title":
 
-            if (searchFor.equals("Movie")) {
-                new Thread() {
-                    public void run() {
-                        try {
-                            ArrayList<Media> medias = new ArrayList<Media>();
-                            medias.addAll(handler.getMoviesByTitle(searchText));
-                            javafx.application.Platform.runLater(
-                                    new Runnable() {
-                                        public void run() {
-                                            updateUiMedia(medias);
-                                        }
-                                    });
-                        } catch (QueryException e) {
-                            showErrorMessage(e.getMessage());
+                if (searchFor.equals("Movie")) {
+                    new Thread() {
+                        public void run() {
+                            try {
+                                ArrayList<Media> medias = new ArrayList<Media>();
+                                medias.addAll(handler.getMoviesByTitle(searchText));
+                                Platform.runLater(
+                                        new Runnable() {
+                                            public void run() {
+                                                updateUiMedia(medias);
+                                            }
+                                        });
+                            } catch (QueryException e) {
+                                showErrorMessage(e.getMessage());
+                            }
                         }
-                    }
-                }.start();
-                //(handler.getMoviesByTitle(searchText));
-            }
-            if (searchFor.equals("Album")) {
-                new Thread() {
-                    public void run() {
-                        try {
-                            ArrayList<Media> medias = new ArrayList<Media>();
-                            medias.addAll(handler.getAlbumsByTitle(searchText));
-                            javafx.application.Platform.runLater(
-                                    new Runnable() {
-                                        public void run() {
-                                            updateUiMedia(medias);
-                                        }
-                                    });
-                        } catch (QueryException e) {
-                            showErrorMessage(e.getMessage());
+                    }.start();
+                    //(handler.getMoviesByTitle(searchText));
+                }
+                if (searchFor.equals("Album")) {
+                    new Thread() {
+                        public void run() {
+                            try {
+                                ArrayList<Media> medias = new ArrayList<Media>();
+                                medias.addAll(handler.getAlbumsByTitle(searchText));
+                                Platform.runLater(
+                                        new Runnable() {
+                                            public void run() {
+                                                updateUiMedia(medias);
+                                            }
+                                        });
+                            } catch (QueryException e) {
+                                showErrorMessage(e.getMessage());
+                            }
                         }
-                    }
-                }.start();
-            }
-            if (searchFor.equals("Song")) {
-                new Thread() {
-                    public void run() {
-                        try {
-                            ArrayList<Media> medias = new ArrayList<Media>();
-                            medias.addAll(handler.getSongsByTitle(searchText));
-                            javafx.application.Platform.runLater(
-                                    new Runnable() {
-                                        public void run() {
-                                            updateUiMedia(medias);
-                                        }
-                                    });
-                        } catch (QueryException e) {
-                            showErrorMessage(e.getMessage());
+                    }.start();
+                }
+                if (searchFor.equals("Song")) {
+                    new Thread() {
+                        public void run() {
+                            try {
+                                ArrayList<Media> medias = new ArrayList<Media>();
+                                medias.addAll(handler.getSongsByTitle(searchText));
+                                Platform.runLater(
+                                        new Runnable() {
+                                            public void run() {
+                                                updateUiMedia(medias);
+                                            }
+                                        });
+                            } catch (QueryException e) {
+                                showErrorMessage(e.getMessage());
+                            }
                         }
-                    }
-                }.start();
-            }
-        } else if (searchBy.equals("Genre")) {
+                    }.start();
+                }
+                break;
+            case "Genre":
 
-            if (searchFor.equals("Movie")) {
-                new Thread() {
-                    public void run() {
-                        try {
-                            ArrayList<Media> medias = new ArrayList<Media>();
-                            medias.addAll(handler.getMoviesByGenre(searchText));
-                            javafx.application.Platform.runLater(
-                                    new Runnable() {
-                                        public void run() {
-                                            updateUiMedia(medias);
-                                        }
-                                    });
-                        } catch (QueryException e) {
-                            showErrorMessage(e.getMessage());
+                if (searchFor.equals("Movie")) {
+                    new Thread() {
+                        public void run() {
+                            try {
+                                ArrayList<Media> medias = new ArrayList<Media>();
+                                medias.addAll(handler.getMoviesByGenre(searchText));
+                                Platform.runLater(
+                                        new Runnable() {
+                                            public void run() {
+                                                updateUiMedia(medias);
+                                            }
+                                        });
+                            } catch (QueryException e) {
+                                showErrorMessage(e.getMessage());
+                            }
                         }
-                    }
-                }.start();
-            }
-            if (searchFor.equals("Album")) {
-                new Thread() {
-                    public void run() {
-                        try {
-                            ArrayList<Media> medias = new ArrayList<Media>();
-                            medias.addAll(handler.getAlbumsByGenre(searchText));
-                            javafx.application.Platform.runLater(
-                                    new Runnable() {
-                                        public void run() {
-                                            updateUiMedia(medias);
-                                        }
-                                    });
-                        } catch (QueryException e) {
-                            showErrorMessage(e.getMessage());
+                    }.start();
+                }
+                if (searchFor.equals("Album")) {
+                    new Thread() {
+                        public void run() {
+                            try {
+                                ArrayList<Media> medias = new ArrayList<Media>();
+                                medias.addAll(handler.getAlbumsByGenre(searchText));
+                                Platform.runLater(
+                                        new Runnable() {
+                                            public void run() {
+                                                updateUiMedia(medias);
+                                            }
+                                        });
+                            } catch (QueryException e) {
+                                showErrorMessage(e.getMessage());
+                            }
                         }
-                    }
-                }.start();
-                //(handler.getAlbumsByGenre(searchText));
+                    }.start();
+                    //(handler.getAlbumsByGenre(searchText));
 
-            }
-            if (searchFor.equals("Song")) {
-                new Thread() {
-                    public void run() {
-                        try {
-                            ArrayList<Media> medias = new ArrayList<Media>();
-                            medias.addAll(handler.getSongsByGenre(searchText));
-                            javafx.application.Platform.runLater(
-                                    new Runnable() {
-                                        public void run() {
-                                            updateUiMedia(medias);
-                                        }
-                                    });
-                        } catch (QueryException e) {
-                            showErrorMessage(e.getMessage());
+                }
+                if (searchFor.equals("Song")) {
+                    new Thread() {
+                        public void run() {
+                            try {
+                                ArrayList<Media> medias = new ArrayList<Media>();
+                                medias.addAll(handler.getSongsByGenre(searchText));
+                                Platform.runLater(
+                                        new Runnable() {
+                                            public void run() {
+                                                updateUiMedia(medias);
+                                            }
+                                        });
+                            } catch (QueryException e) {
+                                showErrorMessage(e.getMessage());
+                            }
                         }
-                    }
-                }.start();
+                    }.start();
 
-            }
+                }
 
-        } else if (searchBy.equals("Artist")) {
+                break;
+            case "Artist":
 
-            if (searchFor.equals("Album")) {
-                new Thread() {
-                    public void run() {
-                        try {
-                            ArrayList<Media> medias = new ArrayList<Media>();
-                            medias.addAll(handler.getAlbumsByArtist(searchText));
-                            javafx.application.Platform.runLater(
-                                    new Runnable() {
-                                        public void run() {
-                                            updateUiMedia(medias);
-                                        }
-                                    });
-                        } catch (QueryException e) {
-                            showErrorMessage(e.getMessage());
+                if (searchFor.equals("Album")) {
+                    new Thread() {
+                        public void run() {
+                            try {
+                                ArrayList<Media> medias = new ArrayList<Media>();
+                                medias.addAll(handler.getAlbumsByArtist(searchText));
+                                Platform.runLater(
+                                        new Runnable() {
+                                            public void run() {
+                                                updateUiMedia(medias);
+                                            }
+                                        });
+                            } catch (QueryException e) {
+                                showErrorMessage(e.getMessage());
+                            }
                         }
-                    }
-                }.start();
-            }
-            if (searchFor.equals("Song")) {
-                new Thread() {
-                    public void run() {
-                        try {
-                            ArrayList<Media> medias = new ArrayList<Media>();
-                            medias.addAll(handler.getSongsByArtist(searchText));
-                            javafx.application.Platform.runLater(
-                                    new Runnable() {
-                                        public void run() {
-                                            updateUiMedia(medias);
-                                        }
-                                    });
-                        } catch (QueryException e) {
-                            showErrorMessage(e.getMessage());
+                    }.start();
+                }
+                if (searchFor.equals("Song")) {
+                    new Thread() {
+                        public void run() {
+                            try {
+                                ArrayList<Media> medias = new ArrayList<Media>();
+                                medias.addAll(handler.getSongsByArtist(searchText));
+                                Platform.runLater(
+                                        new Runnable() {
+                                            public void run() {
+                                                updateUiMedia(medias);
+                                            }
+                                        });
+                            } catch (QueryException e) {
+                                showErrorMessage(e.getMessage());
+                            }
                         }
-                    }
-                }.start();
+                    }.start();
 
-            }
+                }
 
-        } else if (searchBy.equals("Director")) {
+                break;
+            case "Director":
 
-            if (searchFor.equals("Movie")) {
-                new Thread() {
-                    public void run() {
-                        try {
-                            ArrayList<Media> medias = new ArrayList<Media>();
-                            medias.addAll(handler.getMoviesByDirector(searchText));
-                            javafx.application.Platform.runLater(
-                                    new Runnable() {
-                                        public void run() {
-                                            updateUiMedia(medias);
-                                        }
-                                    });
-                        } catch (QueryException e) {
-                            showErrorMessage(e.getMessage());
+                if (searchFor.equals("Movie")) {
+                    new Thread() {
+                        public void run() {
+                            try {
+                                ArrayList<Media> medias = new ArrayList<Media>();
+                                medias.addAll(handler.getMoviesByDirector(searchText));
+                                Platform.runLater(
+                                        new Runnable() {
+                                            public void run() {
+                                                updateUiMedia(medias);
+                                            }
+                                        });
+                            } catch (QueryException e) {
+                                showErrorMessage(e.getMessage());
+                            }
                         }
-                    }
-                }.start();
-            }
-        } else if (searchBy.equals("Rating")) {
+                    }.start();
+                }
+                break;
+            case "Rating":
 
-            if (searchFor.equals("Movie")) {
-                new Thread() {
-                    public void run() {
-                        try {
-                            ArrayList<Media> medias = new ArrayList<Media>();
-                            medias.addAll(handler.getMoviesByRating(Integer.parseInt(searchText)));
-                            javafx.application.Platform.runLater(
-                                    new Runnable() {
-                                        public void run() {
-                                            updateUiMedia(medias);
-                                        }
-                                    });
-                        } catch (QueryException e) {
-                            showErrorMessage(e.getMessage());
+                if (searchFor.equals("Movie")) {
+                    new Thread() {
+                        public void run() {
+                            try {
+                                ArrayList<Media> medias = new ArrayList<Media>();
+                                medias.addAll(handler.getMoviesByRating(Integer.parseInt(searchText)));
+                                Platform.runLater(
+                                        new Runnable() {
+                                            public void run() {
+                                                updateUiMedia(medias);
+                                            }
+                                        });
+                            } catch (QueryException e) {
+                                showErrorMessage(e.getMessage());
+                            }
                         }
-                    }
-                }.start();
-            }
-            if (searchFor.equals("Song")) {
-                new Thread() {
-                    public void run() {
-                        try {
-                            ArrayList<Media> medias = new ArrayList<Media>();
-                            medias.addAll(handler.getSongsByRating(Integer.parseInt(searchText)));
-                            javafx.application.Platform.runLater(
-                                    new Runnable() {
-                                        public void run() {
-                                            updateUiMedia(medias);
-                                        }
-                                    });
-                        } catch (QueryException e) {
-                            showErrorMessage(e.getMessage());
+                    }.start();
+                }
+                if (searchFor.equals("Song")) {
+                    new Thread() {
+                        public void run() {
+                            try {
+                                ArrayList<Media> medias = new ArrayList<Media>();
+                                medias.addAll(handler.getSongsByRating(Integer.parseInt(searchText)));
+                                Platform.runLater(
+                                        new Runnable() {
+                                            public void run() {
+                                                updateUiMedia(medias);
+                                            }
+                                        });
+                            } catch (QueryException e) {
+                                showErrorMessage(e.getMessage());
+                            }
                         }
-                    }
-                }.start();
-            }
-            if (searchFor.equals("Album")) {
-                new Thread() {
-                    public void run() {
-                        try {
-                            ArrayList<Media> medias = new ArrayList<Media>();
-                            medias.addAll(handler.getAlbumsByRating(Integer.parseInt(searchText)));
-                            javafx.application.Platform.runLater(
-                                    new Runnable() {
-                                        public void run() {
-                                            updateUiMedia(medias);
-                                        }
-                                    });
-                        } catch (QueryException e) {
-                            showErrorMessage(e.getMessage());
+                    }.start();
+                }
+                if (searchFor.equals("Album")) {
+                    new Thread() {
+                        public void run() {
+                            try {
+                                ArrayList<Media> medias = new ArrayList<Media>();
+                                medias.addAll(handler.getAlbumsByRating(Integer.parseInt(searchText)));
+                                Platform.runLater(
+                                        new Runnable() {
+                                            public void run() {
+                                                updateUiMedia(medias);
+                                            }
+                                        });
+                            } catch (QueryException e) {
+                                showErrorMessage(e.getMessage());
+                            }
                         }
-                    }
-                }.start();
-            }
+                    }.start();
+                }
+                break;
         }
 
     }

@@ -196,7 +196,11 @@ public class NoSQLHandler extends Handler {
     public Movie getMovieById(int id) throws QueryException {
         MongoCollection<Document> collection = database.getCollection("Movie");
         MongoCursor<Document> cursor = collection.find(Filters.eq("_id", id)).iterator();
-        return getMoviesCursor(cursor).get(0);
+
+        ArrayList<Movie> movies = getMoviesCursor(cursor);
+        if (!movies.isEmpty())
+            return movies.get(0);
+        return null;
     }
 
     @Override
