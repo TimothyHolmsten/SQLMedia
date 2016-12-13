@@ -165,12 +165,57 @@ public class MediaLibraryController implements Initializable {
             ArrayList<Media> medias = new ArrayList<>();
 
             if (searchFor.equals("Movie")) {
+                new Thread() {
+                    public void run() {
+                        try {
+                            String msg = handler.getMoviesByTitle(searchText).get(0).getTitle();
+                            javafx.application.Platform.runLater(
+                                    new Runnable() {
+                                        public void run() {
+                                            updateUi(msg);
+                                        }
+                                    });
+                        } catch (QueryException e) {
+                            showErrorMessage(e.getMessage());
+                        }
+                    }
+                }.start();
                 medias.addAll(handler.getMoviesByTitle(searchText));
             }
             if (searchFor.equals("Album")) {
+                new Thread() {
+                    public void run() {
+                        try {
+                            String msg = handler.getAlbumsByTitle(searchText).get(0).getTitle();
+                            javafx.application.Platform.runLater(
+                                    new Runnable() {
+                                        public void run() {
+                                            updateUi(msg);
+                                        }
+                                    });
+                        } catch (QueryException e) {
+                            showErrorMessage(e.getMessage());
+                        }
+                    }
+                }.start();
                 medias.addAll(handler.getAlbumsByTitle(searchText));
             }
             if (searchFor.equals("Song")) {
+                new Thread() {
+                    public void run() {
+                        try {
+                            String msg = handler.getSongsByTitle(searchText).get(0).getTitle();
+                            javafx.application.Platform.runLater(
+                                    new Runnable() {
+                                        public void run() {
+                                            updateUi(msg);
+                                        }
+                                    });
+                        } catch (QueryException e) {
+                            showErrorMessage(e.getMessage());
+                        }
+                    }
+                }.start();
                 medias.addAll(handler.getSongsByTitle(searchText));
             }
             if (medias.size() > 0)
@@ -182,13 +227,58 @@ public class MediaLibraryController implements Initializable {
             ArrayList<Media> medias = new ArrayList<>();
 
             if (searchFor.equals("Movie")) {
+                new Thread() {
+                    public void run() {
+                        try {
+                            String msg = handler.getMoviesByGenre(searchText).get(0).getTitle();
+                            javafx.application.Platform.runLater(
+                                    new Runnable() {
+                                        public void run() {
+                                            updateUi(msg);
+                                        }
+                                    });
+                        } catch (QueryException e) {
+                            showErrorMessage(e.getMessage());
+                        }
+                    }
+                }.start();
                 medias.addAll(handler.getMoviesByGenre(searchText));
             }
             if (searchFor.equals("Album")) {
+                new Thread() {
+                    public void run() {
+                        try {
+                            String msg = handler.getAlbumsByGenre(searchText).get(0).getTitle();
+                            javafx.application.Platform.runLater(
+                                    new Runnable() {
+                                        public void run() {
+                                            updateUi(msg);
+                                        }
+                                    });
+                        } catch (QueryException e) {
+                            showErrorMessage(e.getMessage());
+                        }
+                    }
+                }.start();
                 medias.addAll(handler.getAlbumsByGenre(searchText));
 
             }
             if (searchFor.equals("Song")) {
+                new Thread() {
+                    public void run() {
+                        try {
+                            String msg = handler.getSongsByGenre(searchText).get(0).getTitle();
+                            javafx.application.Platform.runLater(
+                                    new Runnable() {
+                                        public void run() {
+                                            updateUi(msg);
+                                        }
+                                    });
+                        } catch (QueryException e) {
+                            showErrorMessage(e.getMessage());
+                        }
+                    }
+                }.start();
                 medias.addAll(handler.getSongsByGenre(searchText));
 
             }
@@ -202,9 +292,39 @@ public class MediaLibraryController implements Initializable {
             ArrayList<Media> medias = new ArrayList<>();
 
             if (searchFor.equals("Album")) {
+                new Thread() {
+                    public void run() {
+                        try {
+                            String msg = handler.getAlbumsByArtist(searchText).get(0).getTitle();
+                            javafx.application.Platform.runLater(
+                                    new Runnable() {
+                                        public void run() {
+                                            updateUi(msg);
+                                        }
+                                    });
+                        } catch (QueryException e) {
+                            showErrorMessage(e.getMessage());
+                        }
+                    }
+                }.start();
                 medias.addAll(handler.getAlbumsByArtist(searchText));
             }
             if (searchFor.equals("Song")) {
+                new Thread() {
+                    public void run() {
+                        try {
+                            String msg = handler.getSongsByArtist(searchText).get(0).getTitle();
+                            javafx.application.Platform.runLater(
+                                    new Runnable() {
+                                        public void run() {
+                                            updateUi(msg);
+                                        }
+                                    });
+                        } catch (QueryException e) {
+                            showErrorMessage(e.getMessage());
+                        }
+                    }
+                }.start();
                 medias.addAll(handler.getSongsByArtist(searchText));
 
             }
@@ -218,6 +338,21 @@ public class MediaLibraryController implements Initializable {
             ArrayList<Media> medias = new ArrayList<>();
 
             if (searchFor.equals("Movie")) {
+                new Thread() {
+                    public void run() {
+                        try {
+                            String msg = handler.getMoviesByDirector(searchText).get(0).getTitle();
+                            javafx.application.Platform.runLater(
+                                    new Runnable() {
+                                        public void run() {
+                                            updateUi(msg);
+                                        }
+                                    });
+                        } catch (QueryException e) {
+                            showErrorMessage(e.getMessage());
+                        }
+                    }
+                }.start();
                 medias.addAll(handler.getMoviesByDirector(searchText));
             }
             if (medias.size() > 0)
@@ -229,9 +364,39 @@ public class MediaLibraryController implements Initializable {
             ArrayList<Media> medias = new ArrayList<>();
 
             if (searchFor.equals("Movie")) {
+                new Thread() {
+                    public void run() {
+                        try {
+                            String msg = handler.getMoviesByRating(Integer.parseInt(searchText)).get(0).getTitle();
+                            javafx.application.Platform.runLater(
+                                    new Runnable() {
+                                        public void run() {
+                                            updateUi(msg);
+                                        }
+                                    });
+                        } catch (QueryException e) {
+                            showErrorMessage(e.getMessage());
+                        }
+                    }
+                }.start();
                 medias.addAll(handler.getMoviesByRating(Integer.parseInt(searchText)));
             }
             if (searchFor.equals("Song")) {
+                new Thread() {
+                    public void run() {
+                        try {
+                            String msg = handler.getSongsByRating(Integer.parseInt(searchText)).get(0).getTitle();
+                            javafx.application.Platform.runLater(
+                                    new Runnable() {
+                                        public void run() {
+                                            updateUi(msg);
+                                        }
+                                    });
+                        } catch (QueryException e) {
+                            showErrorMessage(e.getMessage());
+                        }
+                    }
+                }.start();
                 medias.addAll(handler.getSongsByRating(Integer.parseInt(searchText)));
             }
             if (medias.size() > 0)
