@@ -58,13 +58,13 @@ public class NoSQLHandler extends Handler {
             ArrayList<Document> songArtists = new ArrayList<>();
             for (Artist artist : song.getArtists())
                 songArtists.add(new Document("name", artist.getName())
-                        .append("addBy", artist.getAddedByUser().getName()));
+                        .append("addBy", new Document("name",artist.getAddedByUser().getName())));
 
             songlist.add(new Document("title", song.getTitle())
                     .append("genre", song.getGenre())
                     .append("rating", 0)
                     .append("artists", songArtists)
-                    .append("addBy", user.getName())
+                    .append("addBy", new Document("name",user.getName()))
                     .append("_id", song.getMediaIdString()));
 
         }
