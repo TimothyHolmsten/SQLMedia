@@ -7,6 +7,7 @@ public class Artist extends Person implements AddedContent {
     private int artistId;
     private int addedByUserId;
     private User user;
+    private String artistIdString;
 
     /**
      * Represents an artist entity of the database
@@ -22,9 +23,10 @@ public class Artist extends Person implements AddedContent {
         this.user = null;
     }
 
-    public Artist(String artistName, User user) {
+    public Artist(String artistName, User user, String artistIdString) {
         super(artistName);
         this.user = user;
+        this.artistIdString = artistIdString;
     }
 
     /**
@@ -54,5 +56,9 @@ public class Artist extends Person implements AddedContent {
 
     public User getAddedByUser() {
         return user;
+    }
+
+    public String getArtistIdString() {
+        return artistIdString;
     }
 }

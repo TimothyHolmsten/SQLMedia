@@ -81,5 +81,7 @@ public interface Query {
 
     User getUserByName(String userName) throws QueryException;
 
+    ArrayList<Album> getAlbumsByRating(int rating) throws QueryException;
+
 
 }

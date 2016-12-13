@@ -521,6 +521,11 @@ public class SQLHandler extends Handler {
     }
 
     @Override
+    public ArrayList<Album> getAlbumsByRating(int rating) throws QueryException {
+        return null;
+    }
+
+    @Override
     public ArrayList<Artist> getArtists() throws QueryException {
         ArrayList<Artist> artists = new ArrayList<>();
         ResultSet rs = null;
